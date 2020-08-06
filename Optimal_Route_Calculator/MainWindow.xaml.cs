@@ -23,6 +23,9 @@ namespace Optimal_Route_Calculator
         public MainWindow()
         {
             InitializeComponent();
+            gameTimer.Tick += GameLoop;
+            gameTimer.Interval = TimeSpan.FromMilliseconds(20);
+            gameTimer.Start();
         }
     }
 }
