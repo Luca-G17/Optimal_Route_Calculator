@@ -1,0 +1,15 @@
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\bin\Debug\Optimal_Route_Calculator.exe.config
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\bin\Debug\Optimal_Route_Calculator.exe
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\bin\Debug\Optimal_Route_Calculator.pdb
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\Optimal_Route_Calculator.csprojAssemblyReference.cache
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\MainWindow.g.cs
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\App.g.cs
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\Optimal_Route_Calculator_MarkupCompile.cache
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\Optimal_Route_Calculator_MarkupCompile.lref
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\MainWindow.baml
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\Optimal_Route_Calculator.g.resources
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\Optimal_Route_Calculator.Properties.Resources.resources
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\Optimal_Route_Calculator.csproj.GenerateResource.cache
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\Optimal_Route_Calculator.csproj.CoreCompileInputs.cache
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\Optimal_Route_Calculator.exe
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\Optimal_Route_Calculator.pdb

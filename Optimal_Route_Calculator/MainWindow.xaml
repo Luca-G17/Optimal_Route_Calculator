@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Optimal_Route_Calculator"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Canvas Name="MyCanvas" Focusable="True" Background="Black" KeyUp="KeyIsUp" KeyDown="KeyIsDown">
+        Title="MainWindow" Height="726" Width="1600">
+    <Canvas Name="MyCanvas" Focusable="True" Background="Black" KeyUp="KeyIsUp" KeyDown="KeyIsDown" MouseLeftButtonUp="LeftMouseIsUp">
 
     </Canvas>
 </Window>
