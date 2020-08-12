@@ -16,9 +16,6 @@ namespace Optimal_Route_Calculator
         private double width = 50;
         private double height = 50;
 
-        private int map_segment_row;
-        private int map_segment_col;
-
         public Waypoint(Canvas MyCanvas, double SetLeft, double SetTop, int MapSegmentRow, int MagSegmentCol)
         {
             ellipse.Width = width;
@@ -26,8 +23,8 @@ namespace Optimal_Route_Calculator
             ellipse.Stroke = Brushes.Red;
             ellipse.Fill = Brushes.Transparent;
 
-            map_segment_row = MapSegmentRow;
-            map_segment_col = MagSegmentCol;
+            map_segment_index[0] = MapSegmentRow;
+            map_segment_index[1] = MagSegmentCol;
 
             getLeft = SetLeft;
             getTop = SetTop;

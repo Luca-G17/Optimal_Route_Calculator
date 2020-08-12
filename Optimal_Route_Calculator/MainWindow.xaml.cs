@@ -20,7 +20,7 @@ namespace Optimal_Route_Calculator
         DispatcherTimer gameTimer = new DispatcherTimer();
         FullMapObject fullMap = new FullMapObject();
         List<Waypoint> waypoints = new List<Waypoint>();
-
+        List<LineObject> lines = new List<LineObject>();
         public MainWindow()
         {
             InitializeComponent();
@@ -86,7 +86,14 @@ namespace Optimal_Route_Calculator
         private void LeftMouseIsUp(object sender, MouseButtonEventArgs e)
         {
             Point point = e.GetPosition(MyCanvas);
-            waypoints.Add(new Waypoint(MyCanvas, point.X, point.Y, fullMap.GetVisibleSegment[0], fullMap.GetVisibleSegment[1]));
+            Waypoint new_waypoint = new Waypoint(MyCanvas, point.X - 25, point.Y - 25, fullMap.GetVisibleSegment[0], fullMap.GetVisibleSegment[1]);
+            waypoints.Add(new_waypoint);
+            if (waypoints.Count > 1)
+            {
+                Waypoint old_waypoint = waypoints[waypoints.Count - 2];
+                double[] LinePos = { old_waypoint.GetLeft + 25, old_waypoint.GetTop + 25, new_waypoint.GetLeft + 25, new_waypoint.GetTop + 25 };
+                lines.Add(new LineObject(MyCanvas, fullMap.GetVisibleSegment[0], fullMap.GetVisibleSegment[1], LinePos));
+            }
         }
     }
 }

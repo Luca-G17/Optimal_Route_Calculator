@@ -33,7 +33,7 @@ namespace Optimal_Route_Calculator
                         {
                             waypoint.SetVisible(true, MyCanvas);
                         }
-                        else //if (waypoint.GetMapSegment[0] == visible_segment[0] - row && waypoint.GetMapSegment[1] == visible_segment[1] - col)
+                        else if (waypoint.GetMapSegment[0] == visible_segment[0] - row && waypoint.GetMapSegment[1] == visible_segment[1] - col)
                         {
                             waypoint.SetVisible(false, MyCanvas);
                         }

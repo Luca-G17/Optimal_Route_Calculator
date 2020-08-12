@@ -13,6 +13,9 @@ namespace Optimal_Route_Calculator
     {
         private BmpBitmapEncoder encoder = new BmpBitmapEncoder();
         private MemoryStream memoryStream = new MemoryStream();
+        private Rectangle rect = new Rectangle();
+        
+        private ImageBrush Skin = new ImageBrush();
         private BitmapImage bitmapImage;
 
         private byte[,] bitmapByteArr = new byte[750,1600];

@@ -11,9 +11,7 @@ namespace Optimal_Route_Calculator
 {
     abstract class MainObject
     {
-        protected bool visible = false;
-        protected Rectangle rect = new Rectangle();
-        protected ImageBrush Skin = new ImageBrush();
+        protected bool visible = true;
         protected double getLeft;
         protected double getTop;
         protected int[] map_segment_index = new int[2];
