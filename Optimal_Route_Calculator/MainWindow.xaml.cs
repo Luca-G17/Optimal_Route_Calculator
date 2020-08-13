@@ -62,19 +62,19 @@ namespace Optimal_Route_Calculator
         {
             if (e.Key == Key.D)
             {
-                fullMap.SetVisiblePos(MyCanvas, 0, 1, waypoints);
+                fullMap.SetVisiblePos(MyCanvas, 0, 1, waypoints, lines);
             }
             if (e.Key == Key.A)
             {
-                fullMap.SetVisiblePos(MyCanvas, 0, -1, waypoints);
+                fullMap.SetVisiblePos(MyCanvas, 0, -1, waypoints, lines);
             }
             if (e.Key == Key.W)
             {
-                fullMap.SetVisiblePos(MyCanvas, -1, 0, waypoints);
+                fullMap.SetVisiblePos(MyCanvas, -1, 0, waypoints, lines);
             }
             if (e.Key == Key.S)
             {
-                fullMap.SetVisiblePos(MyCanvas, 1, 0, waypoints);
+                fullMap.SetVisiblePos(MyCanvas, 1, 0, waypoints, lines);
             }
         }
 
@@ -95,6 +95,21 @@ namespace Optimal_Route_Calculator
                 lines.Add(new LineObject(MyCanvas, fullMap.GetVisibleSegment[0], fullMap.GetVisibleSegment[1], LinePos));
             }
         }
+
+        private bool IsPixelLand(int[] pixel_pos, int[] segment_pos)
+        {
+            MapSegmentObject Segment = fullMap.GetMapSegmentArr()[segment_pos[0], segment_pos[1]];
+            byte[] SegmentArr = Segment.GetBitmapByteArr();
+            if (SegmentArr[pixel_pos[0]] == 255)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
     }
 }
 

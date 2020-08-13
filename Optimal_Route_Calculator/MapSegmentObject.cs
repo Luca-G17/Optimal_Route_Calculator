@@ -5,6 +5,8 @@ using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
+using System.Security.Policy;
+using System.Windows.Documents;
 
 namespace Optimal_Route_Calculator
 {
@@ -18,7 +20,9 @@ namespace Optimal_Route_Calculator
         private ImageBrush Skin = new ImageBrush();
         private BitmapImage bitmapImage;
 
-        private byte[,] bitmapByteArr = new byte[750,1600];
+        //private byte[,] bitmapByteArr = new byte[750, 4557];
+        private byte[] bitmapByteArr = new byte[120000];
+
         private string uri;
         private int mapNum;
 
@@ -27,7 +31,7 @@ namespace Optimal_Route_Calculator
         {
             map_segment_index[0] = Row;
             map_segment_index[1] = Col;
-
+             
             uri = ($"pack://application:,,,/Images/Map {Col},{Row}.JPG");
             bitmapImage = new BitmapImage(new Uri(uri));
             rect.Width = bitmapImage.Width;
@@ -65,6 +69,10 @@ namespace Optimal_Route_Calculator
                 MyCanvas.Children.Remove(rect);
             }
         }
+        public byte[] GetBitmapByteArr()
+        {
+            return bitmapByteArr;
+        }
         public string GetUri
         {
             get { return uri; }
@@ -76,22 +84,27 @@ namespace Optimal_Route_Calculator
         }
         public void ImageToByte()
         {
-            byte[] result = null;
-            int result_index = 0;
-
+            byte[] data;
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
-            encoder.Save(memoryStream);
-
-            result = memoryStream.ToArray();
-            for (int row = 0; row < bitmapImage.PixelHeight - 1; row++)
+            using (MemoryStream ms = new MemoryStream())
             {
-                for (int col = 0; col < bitmapImage.PixelWidth - 1; col++)
+                encoder.Save(ms);
+                data = ms.ToArray();
+            }
+            bitmapByteArr = data;
+            /*
+            for (int i = 0; i < bitmapImage.Height - 1; i++)
+            {
+                for (int f = 0; f < bitmapImage.Width * 3 - 1; f++)
                 {
-                    bitmapByteArr[row,col] = result[result_index];
-                    result_index += 1;
-                }    
-            } 
-
+                    byte item = data[data_index];
+                    bitmapByteArr[i, f] = item;
+                    data_index += 1;
+                }
+            }
+            Console.WriteLine("hi");
+            */
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Optimal_Route_Calculator
             map_segment_index[1] = MagSegmentCol;
 
             line.Stroke = Brushes.Black;
-            line.StrokeThickness = 5;
+            line.StrokeThickness = 2;
 
             line.X1 = line_pos[0] = LinePos[0];
             line.Y1 = line_pos[1] = LinePos[1];

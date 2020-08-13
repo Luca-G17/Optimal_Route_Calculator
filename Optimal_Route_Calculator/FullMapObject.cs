@@ -16,7 +16,7 @@ namespace Optimal_Route_Calculator
         {
 
         }
-        public void SetVisiblePos(Canvas MyCanvas, int row, int col, List<Waypoint> waypoints)
+        public void SetVisiblePos(Canvas MyCanvas, int row, int col, List<Waypoint> waypoints, List<LineObject> lines)
         {
             if (visible_segment[0] + row > -1 && visible_segment[0] + row < 5 && visible_segment[1] + col < 3 && visible_segment[1] + col > -1)
             {
@@ -24,23 +24,29 @@ namespace Optimal_Route_Calculator
                 {
                     visible_segment[0] += row;
                     visible_segment[1] += col;
+
                     map_segment_arr[visible_segment[0], visible_segment[1]].SetVisible(true, MyCanvas);
                     map_segment_arr[visible_segment[0] - row, visible_segment[1] - col].SetVisible(false, MyCanvas);
 
-                    foreach (Waypoint waypoint in waypoints)
-                    {
-                        if (waypoint.GetMapSegment[0] == visible_segment[0] && waypoint.GetMapSegment[1] == visible_segment[1])
-                        {
-                            waypoint.SetVisible(true, MyCanvas);
-                        }
-                        else if (waypoint.GetMapSegment[0] == visible_segment[0] - row && waypoint.GetMapSegment[1] == visible_segment[1] - col)
-                        {
-                            waypoint.SetVisible(false, MyCanvas);
-                        }
-                    }
+                    ChangeObjectVisibility(MyCanvas, new List<MainObject>(lines), row, col);
+                    ChangeObjectVisibility(MyCanvas, new List<MainObject>(waypoints), row, col);
                 }
             }
         }
+        public void ChangeObjectVisibility(Canvas MyCanvas, List<MainObject> mainObjects, int row, int col)
+        {
+            foreach (MainObject mainObject in mainObjects)
+            {
+                if (mainObject.GetMapSegment[0] == visible_segment[0] && mainObject.GetMapSegment[1] == visible_segment[1])
+                {
+                    mainObject.SetVisible(true, MyCanvas);
+                }
+                else if (mainObject.GetMapSegment[0] == visible_segment[0] - row && mainObject.GetMapSegment[1] == visible_segment[1] - col)
+                {
+                    mainObject.SetVisible(false, MyCanvas);
+                }
+            }
+        } 
         public int[] GetVisibleSegment
         {
             get { return visible_segment; }
