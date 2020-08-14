@@ -20,9 +20,6 @@ namespace Optimal_Route_Calculator
         private ImageBrush Skin = new ImageBrush();
         private BitmapImage bitmapImage;
 
-        //private byte[,] bitmapByteArr = new byte[750, 4557];
-        private byte[] bitmapByteArr = new byte[120000];
-
         private string uri;
         private int mapNum;
 
@@ -43,6 +40,10 @@ namespace Optimal_Route_Calculator
             Canvas.SetTop(rect, GetTop);
 
             fullMap.SetMapSegmentArr(Row, Col, this);
+        }
+        public Rectangle GetRectangle
+        {
+            get { return rect; }
         }
         public BitmapImage GetBitmap
         {
@@ -69,10 +70,7 @@ namespace Optimal_Route_Calculator
                 MyCanvas.Children.Remove(rect);
             }
         }
-        public byte[] GetBitmapByteArr()
-        {
-            return bitmapByteArr;
-        }
+
         public string GetUri
         {
             get { return uri; }
@@ -82,29 +80,7 @@ namespace Optimal_Route_Calculator
             get { return mapNum; }
             set { mapNum = value; }
         }
-        public void ImageToByte()
-        {
-            byte[] data;
-            PngBitmapEncoder encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
-            using (MemoryStream ms = new MemoryStream())
-            {
-                encoder.Save(ms);
-                data = ms.ToArray();
-            }
-            bitmapByteArr = data;
-            /*
-            for (int i = 0; i < bitmapImage.Height - 1; i++)
-            {
-                for (int f = 0; f < bitmapImage.Width * 3 - 1; f++)
-                {
-                    byte item = data[data_index];
-                    bitmapByteArr[i, f] = item;
-                    data_index += 1;
-                }
-            }
-            Console.WriteLine("hi");
-            */
-        }
+
+        
     }
 }
