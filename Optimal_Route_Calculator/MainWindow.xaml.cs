@@ -25,8 +25,8 @@ namespace Optimal_Route_Calculator
         private List<Waypoint> waypoints = new List<Waypoint>();
         private List<LineObject> lines = new List<LineObject>();
 
-        private double HEIGHT = 700 / (166 / 96);
-        private double WIDTH = 1200 / (166 / 96);
+        private double HEIGHT = 700 / (144 / 96);
+        private double WIDTH = 1200 / (144 / 96);
 
         public MainWindow()
         {
@@ -91,9 +91,13 @@ namespace Optimal_Route_Calculator
 
         private void LeftMouseIsUp(object sender, MouseButtonEventArgs e)
         {
+            PlaceWaypoint(e);
+        }
+        private void PlaceWaypoint(MouseButtonEventArgs e)
+        {
             Point point = e.GetPosition(MyCanvas);
             int[] visible_segment = { fullMap.GetVisibleSegment[0], fullMap.GetVisibleSegment[1] };
-            if (IsPixelLand(visible_segment ,(int)Math.Round(point.Y), (int)Math.Round(point.X)))
+            if (!IsPixelLand(visible_segment, (int)Math.Round(point.Y), (int)Math.Round(point.X)))
             {
                 Waypoint new_waypoint = new Waypoint(MyCanvas, point.X - 25, point.Y - 25, visible_segment[0], visible_segment[1]);
                 waypoints.Add(new_waypoint);
@@ -105,22 +109,28 @@ namespace Optimal_Route_Calculator
                 }
             }
         }
-
         private bool IsPixelLand(int[] visible_segment,int pixel_row, int pixel_col)
         {
             MapSegmentObject Segment = fullMap.GetMapSegmentArr()[visible_segment[0], visible_segment[1]];
-            Color color = GetPixelColor(Segment.GetRectangle, pixel_row, pixel_col);
-            return true;
+            double[] segment_dimentions = { Segment.GetRectangle.Height, Segment.GetRectangle.Width };
+            Color color = GetPixelColor(Segment.GetRectangle, pixel_row, pixel_col, segment_dimentions);
+            if (!(color.R == 218 && color.G == 170 && color.B == 255) && !(color.R == 218 && color.G == 173 && color.B == 255))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
-        public Color GetPixelColor(Visual visual, int row, int col)
+        public Color GetPixelColor(Visual visual, int row, int col, double[] segmentDimentions)
         {
             Point Dpi = getScreenDPI(visual);
 
             // Viewbox uses values between 0 & 1 so normalize the Rect with respect to the canvas's Height & Width
-            Rect percentSrceenRec = new Rect(col / WIDTH, row / HEIGHT,
-                                          1 / WIDTH, 1 / HEIGHT);
+            Rect percentSrceenRec = new Rect(col / segmentDimentions[1], row / segmentDimentions[0],
+                                          1 / segmentDimentions[1], 1 / segmentDimentions[0]);
 
-            // var bmpOut = new RenderTargetBitmap(1, 1, 96, 96, PixelFormats.Pbgra32); //assumes 96 dpi
             var bmpOut = new RenderTargetBitmap((int)(Dpi.X / 96.0),
                                                 (int)(Dpi.Y / 96.0),
                                                 Dpi.X, Dpi.Y, PixelFormats.Default); // generalized for monitors with different dpi
