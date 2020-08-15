@@ -11,47 +11,42 @@ namespace Optimal_Route_Calculator
     {
         private MapSegmentObject[,] map_segment_arr = new MapSegmentObject[5,3];
 
-        private int[] visible_segment = new int[2] {2, 2}; 
+        private int[] visible_segment_index = new int[2] {2, 2}; 
         public FullMapObject()
         {
 
         }
-        public void SetVisiblePos(Canvas MyCanvas, int row, int col, List<Waypoint> waypoints, List<LineObject> lines)
+        public void SetVisiblePos(Canvas MyCanvas, int row, int col)
         {
-            if (visible_segment[0] + row > -1 && visible_segment[0] + row < 5 && visible_segment[1] + col < 3 && visible_segment[1] + col > -1)
+            if (visible_segment_index[0] + row > -1 && visible_segment_index[0] + row < 5 && visible_segment_index[1] + col < 3 && visible_segment_index[1] + col > -1)
             {
-                if (map_segment_arr[visible_segment[0] + row, visible_segment[1] + col] != null)
+                if (map_segment_arr[visible_segment_index[0] + row, visible_segment_index[1] + col] != null)
                 {
-                    visible_segment[0] += row;
-                    visible_segment[1] += col;
+                    visible_segment_index[0] += row;
+                    visible_segment_index[1] += col;
 
-                    map_segment_arr[visible_segment[0], visible_segment[1]].SetVisible(true, MyCanvas);
-                    map_segment_arr[visible_segment[0] - row, visible_segment[1] - col].SetVisible(false, MyCanvas);
+                    MapSegmentObject visibleMapSegment = map_segment_arr[visible_segment_index[0], visible_segment_index[1]];
+                    MapSegmentObject oldVisibleMapSegment = map_segment_arr[visible_segment_index[0] - row, visible_segment_index[1] - col];
+                    visibleMapSegment.SetVisible(true, MyCanvas);
+                    oldVisibleMapSegment.SetVisible(false, MyCanvas);
 
-                    ChangeObjectVisibility(MyCanvas, new List<MainObject>(lines), row, col);
-                    ChangeObjectVisibility(MyCanvas, new List<MainObject>(waypoints), row, col);
+
+                    visibleMapSegment.ChangeObjectVisibility(MyCanvas);
+                    oldVisibleMapSegment.ChangeObjectVisibility(MyCanvas);
                 }
             }
         }
-        public void ChangeObjectVisibility(Canvas MyCanvas, List<MainObject> mainObjects, int row, int col)
+
+        public int[] GetVisibleSegmentIndex
         {
-            foreach (MainObject mainObject in mainObjects)
-            {
-                if (mainObject.GetMapSegment[0] == visible_segment[0] && mainObject.GetMapSegment[1] == visible_segment[1])
-                {
-                    mainObject.SetVisible(true, MyCanvas);
-                }
-                else if (mainObject.GetMapSegment[0] == visible_segment[0] - row && mainObject.GetMapSegment[1] == visible_segment[1] - col)
-                {
-                    mainObject.SetVisible(false, MyCanvas);
-                }
-            }
-        } 
-        public int[] GetVisibleSegment
-        {
-            get { return visible_segment; }
-            set { visible_segment = value; }
+            get { return visible_segment_index; }
+            set { visible_segment_index = value; }
         }
+        public MapSegmentObject VisibleSegment() 
+        {
+            return map_segment_arr[visible_segment_index[0], visible_segment_index[1]];
+        }
+
         public MapSegmentObject[,] GetMapSegmentArr()
         {
             return map_segment_arr; 

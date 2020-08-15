@@ -11,20 +11,12 @@ namespace Optimal_Route_Calculator
 {
     abstract class MainObject
     {
+        protected UIElement shape;
         protected bool visible = true;
         protected double getLeft;
         protected double getTop;
         protected int[] map_segment_index = new int[2];
 
-
-        public virtual bool GetVisible()
-        {
-            return visible;
-        }
-        public virtual void SetVisible(bool Visable, Canvas MyCanvas)
-        {
-            visible = Visable;
-        }
         public virtual double GetLeft
         {
             get { return getLeft; }
@@ -35,11 +27,29 @@ namespace Optimal_Route_Calculator
             get { return getTop; }
             set { getTop = value; }
         }
-        public virtual int[] GetMapSegment
+        public virtual bool GetVisible()
+        {
+            return visible;
+        }
+        public virtual void SetVisible(bool Visable, Canvas MyCanvas)
+        {
+            visible = Visable;
+            if (visible)
+            {
+                MyCanvas.Children.Add(shape);
+            }
+            else
+            {
+                MyCanvas.Children.Remove(shape);
+            }
+        }
+
+        public virtual int[] GetMapSegmentIndex
         {
             get { return map_segment_index; }
             set { map_segment_index = value; }
         }
+        
     }
     
 }

@@ -1,49 +1,77 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Shapes;
+using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.IO;
-using System.Security.Policy;
-using System.Windows.Documents;
+using System.Windows.Media.Imaging;
+using System.Runtime.InteropServices;
 
 namespace Optimal_Route_Calculator
 {
 
     class MapSegmentObject : MainObject
     {
-        private BmpBitmapEncoder encoder = new BmpBitmapEncoder();
-        private MemoryStream memoryStream = new MemoryStream();
-        private Rectangle rect = new Rectangle();
-        
         private ImageBrush Skin = new ImageBrush();
         private BitmapImage bitmapImage;
+
+        private List<MainObject> waypointsLines = new List<MainObject>();
 
         private string uri;
         private int mapNum;
 
+        private double height;
+        private double width;
+
 
         public MapSegmentObject(Canvas MyCanvas, int Row, int Col, FullMapObject fullMap)
         {
+            uri = ($"pack://application:,,,/Images/Map {Col},{Row}.JPG");
+            bitmapImage = new BitmapImage(new Uri(uri));
+            Skin.ImageSource = bitmapImage;
+
+            height = bitmapImage.Height;
+            width = bitmapImage.Width;
+
+            shape = new Rectangle { Width = width, Height = height, Fill = Skin };
+
             map_segment_index[0] = Row;
             map_segment_index[1] = Col;
              
-            uri = ($"pack://application:,,,/Images/Map {Col},{Row}.JPG");
-            bitmapImage = new BitmapImage(new Uri(uri));
-            rect.Width = bitmapImage.Width;
-            rect.Height = bitmapImage.Height;
-            Skin.ImageSource = bitmapImage;
-            rect.Fill = Skin;
-
-            Canvas.SetLeft(rect, GetLeft);
-            Canvas.SetTop(rect, GetTop);
+            Canvas.SetLeft(shape, GetLeft);
+            Canvas.SetTop(shape, GetTop);
+            Canvas.SetZIndex(shape, -1);
 
             fullMap.SetMapSegmentArr(Row, Col, this);
         }
-        public Rectangle GetRectangle
+        public List<MainObject> GetWaypointsAndLines()
         {
-            get { return rect; }
+            return waypointsLines;          
+        }
+        public void AddWaypointOrLine(int index, MainObject mainObject)
+        {
+            waypointsLines.Insert(index, mainObject);
+        }
+        public void DelWaypointOrLine(int index, Canvas MyCanvas)
+        {
+            waypointsLines[index].SetVisible(false, MyCanvas);
+            waypointsLines.RemoveAt(index);
+        }
+        public void ChangeObjectVisibility(Canvas MyCanvas)
+        {
+            foreach (MainObject mainObject in waypointsLines)
+            {
+                mainObject.SetVisible(!mainObject.GetVisible(), MyCanvas);
+            }
+        }
+        public UIElement GetRectangle
+        {
+            get { return shape; }
         }
         public BitmapImage GetBitmap
         {
@@ -53,22 +81,6 @@ namespace Optimal_Route_Calculator
         {
             get { return map_segment_index; }
             set { map_segment_index = value; }
-        }
-        public override bool GetVisible()
-        {
-            return visible;
-        }
-        public override void SetVisible(bool Visable, Canvas MyCanvas)
-        {
-            visible = Visable;
-            if (visible)
-            {
-                MyCanvas.Children.Add(rect);
-            }
-            else
-            {
-                MyCanvas.Children.Remove(rect);
-            }
         }
 
         public string GetUri
@@ -80,7 +92,16 @@ namespace Optimal_Route_Calculator
             get { return mapNum; }
             set { mapNum = value; }
         }
+        public double GetHeight
+        {
+            get { return height; }
+            set { height = value; }
+        }
+        public double GetWidth
+        {
+            get { return width; }
+            set { width = value; }
+        }
 
-        
     }
 }

@@ -22,8 +22,7 @@ namespace Optimal_Route_Calculator
     {
         DispatcherTimer gameTimer = new DispatcherTimer();
         private FullMapObject fullMap = new FullMapObject();
-        private List<Waypoint> waypoints = new List<Waypoint>();
-        private List<LineObject> lines = new List<LineObject>();
+        private WindArrow WindArrow;
 
         private double HEIGHT = 700 / (144 / 96);
         private double WIDTH = 1200 / (144 / 96);
@@ -57,6 +56,7 @@ namespace Optimal_Route_Calculator
                 }
 
             }
+            WindArrow = new WindArrow(MyCanvas);
         }
 
         private void GameLoop(object sender, EventArgs e)
@@ -68,19 +68,19 @@ namespace Optimal_Route_Calculator
         {
             if (e.Key == Key.D)
             {
-                fullMap.SetVisiblePos(MyCanvas, 0, 1, waypoints, lines);
+                fullMap.SetVisiblePos(MyCanvas, 0, 1);
             }
             if (e.Key == Key.A)
             {
-                fullMap.SetVisiblePos(MyCanvas, 0, -1, waypoints, lines);
+                fullMap.SetVisiblePos(MyCanvas, 0, -1);
             }
             if (e.Key == Key.W)
             {
-                fullMap.SetVisiblePos(MyCanvas, -1, 0, waypoints, lines);
+                fullMap.SetVisiblePos(MyCanvas, -1, 0);
             }
             if (e.Key == Key.S)
             {
-                fullMap.SetVisiblePos(MyCanvas, 1, 0, waypoints, lines);
+                fullMap.SetVisiblePos(MyCanvas, 1, 0);
             }
         }
 
@@ -88,31 +88,76 @@ namespace Optimal_Route_Calculator
         {
 
         }
+        private void RightMouseIsUp(object sender, MouseButtonEventArgs e)
+        {
+            Point point = e.GetPosition(MyCanvas);
+            for (int i = 0; i < fullMap.VisibleSegment().GetWaypointsAndLines().Count(); i += 2)
+            {
+                MainObject waypoint = fullMap.VisibleSegment().GetWaypointsAndLines()[i];
+                if (Hypotenuse(waypoint.GetLeft + 25 - point.X, waypoint.GetTop + 25 - point.Y) < Hypotenuse(25, 25))
+                {
+                    RemoveWaypoint(i);
+                }
+            }
+            
+        }
+        private void RemoveWaypoint(int index)
+        {
+            //Find a better way of doing this 
+            MapSegmentObject segment = fullMap.VisibleSegment();
+            segment.DelWaypointOrLine(index, MyCanvas);
 
+            if (index != 0 && segment.GetWaypointsAndLines().Count() != index)
+            {
+                segment.DelWaypointOrLine(index - 1, MyCanvas);
+                segment.DelWaypointOrLine(index - 1, MyCanvas);
+                PlaceLine(index - 1, segment.GetWaypointsAndLines()[index - 1], segment.GetWaypointsAndLines()[index - 2]);
+            }
+            else if (index != 0)
+            {
+                segment.DelWaypointOrLine(index - 1, MyCanvas);
+            }
+            else if (segment.GetWaypointsAndLines().Count != index)
+            {
+                segment.DelWaypointOrLine(index + 1, MyCanvas);
+            }
+
+
+        }
+        private double Hypotenuse(double num1, double num2)
+        {
+            return Math.Sqrt(num1 * num1 + num2 * num2);
+        }
         private void LeftMouseIsUp(object sender, MouseButtonEventArgs e)
         {
             PlaceWaypoint(e);
         }
+
         private void PlaceWaypoint(MouseButtonEventArgs e)
         {
             Point point = e.GetPosition(MyCanvas);
-            int[] visible_segment = { fullMap.GetVisibleSegment[0], fullMap.GetVisibleSegment[1] };
-            if (!IsPixelLand(visible_segment, (int)Math.Round(point.Y), (int)Math.Round(point.X)))
+            int[] visible_segment_index = { fullMap.GetVisibleSegmentIndex[0], fullMap.GetVisibleSegmentIndex[1] };
+            if (!IsPixelLand(visible_segment_index, (int)Math.Round(point.Y), (int)Math.Round(point.X)))
             {
-                Waypoint new_waypoint = new Waypoint(MyCanvas, point.X - 25, point.Y - 25, visible_segment[0], visible_segment[1]);
-                waypoints.Add(new_waypoint);
-                if (waypoints.Count > 1)
+                Waypoint new_waypoint = new Waypoint(MyCanvas, point.X - 25, point.Y - 25);
+                List<MainObject> waypoints = fullMap.VisibleSegment().GetWaypointsAndLines();
+                if (waypoints.Count > 0)
                 {
-                    Waypoint old_waypoint = waypoints[waypoints.Count - 2];
-                    double[] LinePos = { old_waypoint.GetLeft + 25, old_waypoint.GetTop + 25, new_waypoint.GetLeft + 25, new_waypoint.GetTop + 25 };
-                    lines.Add(new LineObject(MyCanvas, visible_segment[0], visible_segment[1], LinePos));
+                    MainObject old_waypoint = waypoints[waypoints.Count - 1];
+                    PlaceLine(fullMap.VisibleSegment().GetWaypointsAndLines().Count(),old_waypoint, new_waypoint);
                 }
+                fullMap.VisibleSegment().AddWaypointOrLine(fullMap.VisibleSegment().GetWaypointsAndLines().Count(), new_waypoint);
             }
+        }
+        private void PlaceLine(int index, MainObject waypoint1, MainObject waypoint2)
+        {
+            double[] LinePos = { waypoint1.GetLeft + 25, waypoint1.GetTop + 25, waypoint2.GetLeft + 25, waypoint2.GetTop + 25 };
+            fullMap.VisibleSegment().AddWaypointOrLine(index, new LineObject(MyCanvas, LinePos));
         }
         private bool IsPixelLand(int[] visible_segment,int pixel_row, int pixel_col)
         {
-            MapSegmentObject Segment = fullMap.GetMapSegmentArr()[visible_segment[0], visible_segment[1]];
-            double[] segment_dimentions = { Segment.GetRectangle.Height, Segment.GetRectangle.Width };
+            MapSegmentObject Segment = fullMap.VisibleSegment();
+            double[] segment_dimentions = { Segment.GetHeight, Segment.GetWidth };
             Color color = GetPixelColor(Segment.GetRectangle, pixel_row, pixel_col, segment_dimentions);
             if (!(color.R == 218 && color.G == 170 && color.B == 255) && !(color.R == 218 && color.G == 173 && color.B == 255))
             {
@@ -155,6 +200,8 @@ namespace Optimal_Route_Calculator
             Dpi = new Point(96.0 * source.CompositionTarget.TransformToDevice.M11, 96.0 * source.CompositionTarget.TransformToDevice.M22);
             return Dpi;
         }
+
+        
     }
 }
 

@@ -8,13 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/map%201,1.jpg")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/map%202,1.jpg")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/map%202,2.jpg")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/map%202,3.jpg")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/map%202,4.jpg")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/map%203,3.jpg")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/map%203,4.jpg")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/map%203,5.jpg")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/arrow.png")]
 
 

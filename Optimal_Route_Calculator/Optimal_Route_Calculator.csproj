@@ -57,6 +57,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Waypoint.cs" />
+    <Compile Include="WindArrow.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -109,6 +110,9 @@
     <Resource Include="Images\Map 2,2.JPG" />
     <Resource Include="Images\Map 2,3.JPG" />
     <Resource Include="Images\Map 2,4.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Arrow.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Optimal_Route_Calculator"
         mc:Ignorable="d"
         Title="MainWindow" Height="726" Width="1600">
-    <Canvas Name="MyCanvas" Focusable="True" Background="Black" KeyUp="KeyIsUp" KeyDown="KeyIsDown" MouseLeftButtonUp="LeftMouseIsUp">
+    <Canvas Name="MyCanvas" Focusable="True" Background="Black" KeyUp="KeyIsUp" KeyDown="KeyIsDown" MouseLeftButtonUp="LeftMouseIsUp" MouseRightButtonUp="RightMouseIsUp">
 
     </Canvas>
 </Window>
