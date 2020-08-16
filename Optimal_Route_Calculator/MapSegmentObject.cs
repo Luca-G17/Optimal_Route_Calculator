@@ -20,7 +20,8 @@ namespace Optimal_Route_Calculator
         private ImageBrush Skin = new ImageBrush();
         private BitmapImage bitmapImage;
 
-        private List<MainObject> waypointsLines = new List<MainObject>();
+        private List<MainObject> waypointsLines = new List<MainObject>(); // Waypoint -- Line -- Waypoint -- Line -- Waypoint
+        private ShipObject ship = new ShipObject();
 
         private string uri;
         private int mapNum;
@@ -64,9 +65,14 @@ namespace Optimal_Route_Calculator
         }
         public void ChangeObjectVisibility(Canvas MyCanvas)
         {
-            foreach (MainObject mainObject in waypointsLines)
+            for (int i = 0; i < waypointsLines.Count(); i++)
             {
+                MainObject mainObject = waypointsLines[i];
                 mainObject.SetVisible(!mainObject.GetVisible(), MyCanvas);
+                if (i % 2 != 0)
+                {
+                    ((LineObject)mainObject).ChangeRouteLineVisibility(MyCanvas);
+                }
             }
         }
         public UIElement GetRectangle
@@ -101,6 +107,11 @@ namespace Optimal_Route_Calculator
         {
             get { return width; }
             set { width = value; }
+        }
+
+        public ShipObject GetShip
+        {
+            get { return ship; }
         }
 
     }

@@ -22,7 +22,10 @@ namespace Optimal_Route_Calculator
         private readonly int width = 60;
         private readonly int top = 40;
         private readonly int left = 40;
+        
 
+        private RotateTransform rotate = new RotateTransform();
+        private double rotateAngle;
         public WindArrow(Canvas MyCanvas)
         {
             uri = ($"pack://application:,,,/Images/Arrow.png");
@@ -33,10 +36,28 @@ namespace Optimal_Route_Calculator
 
             GetTop = top;
             GetLeft = left;
+            
+            //Delete this later:
+            #region 
+            rotate.Angle = 45;
+            rotateAngle = 45;
+            shape.RenderTransform = rotate;
+            #endregion
 
             Canvas.SetLeft(shape, GetLeft);
             Canvas.SetTop(shape, GetTop);
             MyCanvas.Children.Add(shape);
         }
+        public double GetRotation
+        {
+            set 
+            {
+                rotateAngle = AngleAddition(rotateAngle, value);
+                rotate.Angle = value;
+                shape.RenderTransform = rotate;
+            }
+            get { return rotateAngle; }
+        }
+
     }
 }

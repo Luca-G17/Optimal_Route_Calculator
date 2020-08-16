@@ -16,7 +16,6 @@ namespace Optimal_Route_Calculator
         protected double getLeft;
         protected double getTop;
         protected int[] map_segment_index = new int[2];
-
         public virtual double GetLeft
         {
             get { return getLeft; }
@@ -49,7 +48,26 @@ namespace Optimal_Route_Calculator
             get { return map_segment_index; }
             set { map_segment_index = value; }
         }
-        
+
+        public virtual double AngleAddition(double angle1, double angle2)
+        {
+            if (angle1 + angle2 > 360)
+            {
+                return (angle1 + angle2 - 360);
+            }
+            else if (angle1 + angle2 < 0)
+            {
+                return 360 - (angle1 + angle2 - 360);
+            }
+            else
+            {
+                return angle1 + angle2;
+            }
+        }
+        public virtual void ConeSideSwap()
+        {
+        }
+
     }
     
 }
