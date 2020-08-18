@@ -60,6 +60,7 @@ namespace Optimal_Route_Calculator
                 waypoint_angle = Math.Abs(waypoint_angle);
                 waypoint_angle = AngleAddition(-waypoint_angle, 360);
             }
+         
             
             if (waypoint_angle > windConeAngles[0] || waypoint_angle < windConeAngles[1])
             {

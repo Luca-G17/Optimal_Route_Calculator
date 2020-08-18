@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Optimal_Route_Calculator"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1600">
-    <Canvas Name="MyCanvas" Focusable="True" Background="Black" KeyUp="KeyIsUp" KeyDown="KeyIsDown" MouseLeftButtonUp="LeftMouseIsUp" MouseRightButtonUp="RightMouseIsUp">
-        <Button x:Name="Plot" Content="PLOT" Click="OnPlot" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Canvas.Top="25" Canvas.Left="1025" Background="Red"/>
+        ResizeMode="CanResize"
+        Title="MainWindow">
+    <Canvas Name="MyCanvas" Focusable="True" Background="LightGray" KeyUp="KeyIsUp" KeyDown="KeyIsDown" MouseLeftButtonUp="LeftMouseIsUp" MouseRightButtonUp="RightMouseIsUp">
+        <Button x:Name="Plot" Content="PLOT" Click="OnPlot" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Canvas.Top="25" Canvas.Left="1019" Background="Red"/>
     </Canvas>
 </Window>

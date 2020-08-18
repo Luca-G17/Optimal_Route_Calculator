@@ -64,6 +64,7 @@ namespace Optimal_Route_Calculator
                 return angle1 + angle2;
             }
         }
+
         public virtual void ConeSideSwap()
         {
         }

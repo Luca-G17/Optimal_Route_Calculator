@@ -25,8 +25,8 @@ namespace Optimal_Route_Calculator
         private WindArrow WindArrow;
         private const double WAYPOINT_RADIUS = 25;
 
-        private double HEIGHT = 700 / (144 / 96);
-        private double WIDTH = 1200 / (144 / 96);
+        private double HEIGHT = 550;
+        private double WIDTH = 1200;
 
         public MainWindow()
         {
@@ -139,21 +139,20 @@ namespace Optimal_Route_Calculator
                     double inactive_wind_cone = visible_segment.GetShip.GetWindConeAngles(2);
 
                     // Finds a potential end point of the next route line - this is where the edge of the wind cone intersects the other edge of the wind cone
-                    wind_intersect = CalcLineIntersection(inactive_wind_cone, active_wind_cone, shipPos, waypointPos);
 
                     // Finds a potential end point of the next route line - this is where the edge of the wind cone intersects the edge of the tacking cone
-                    tack_intersect = CalcLineIntersection(tack_cone[(int)tack_cone[2]], active_wind_cone, shipPos, waypointPos);
                     
-                    if (Hypotenuse(tack_intersect[0] - visible_segment.GetShip.GetLeft, tack_intersect[1] - visible_segment.GetShip.GetTop) <
-                        Hypotenuse(wind_intersect[0] - visible_segment.GetShip.GetLeft, wind_intersect[1] - visible_segment.GetShip.GetTop))
+                    // Chooses whichever line will be shorter
+                    if (inactive_wind_cone > Math.Min(tack_cone[0], tack_cone[1]) && inactive_wind_cone < Math.Max(tack_cone[0], tack_cone[1]))
                     {
-                        nextLoc = tack_intersect;
+                        nextLoc = CalcLineIntersection(inactive_wind_cone, active_wind_cone, shipPos, waypointPos);
                     }
                     else
                     {
-                        nextLoc = wind_intersect;
+                        nextLoc = CalcLineIntersection(tack_cone[(int)tack_cone[2]], active_wind_cone, shipPos, waypointPos);
+
                     }
-                    
+
                     PlaceRouteLine(visible_segment.GetShip, nextLoc, next_point_index - 1);
 
                     

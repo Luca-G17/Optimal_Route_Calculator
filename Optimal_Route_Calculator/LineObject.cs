@@ -53,6 +53,11 @@ namespace Optimal_Route_Calculator
                 line.SetVisible(!line.GetVisible(), MyCanvas);
             }
         }
+        public void KillRouteLines()
+        {
+            routeLines.Clear();
+        }
+
         public Line GetShape
         {
             get { return (Line)shape; }
