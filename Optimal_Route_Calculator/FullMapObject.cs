@@ -9,24 +9,23 @@ namespace Optimal_Route_Calculator
 {
     class FullMapObject
     {
-        private MapSegmentObject[,] map_segment_arr = new MapSegmentObject[5,3];
+        private MapSegmentObject[] map_segment_arr = new MapSegmentObject[5];
 
-        private int[] visible_segment_index = new int[2] {2, 2}; 
+        private int visible_segment_index = 2; 
         public FullMapObject()
         {
 
         }
-        public void SetVisiblePos(Canvas MyCanvas, int row, int col)
+        public void SetVisiblePos(Canvas MyCanvas, int index)
         {
-            if (visible_segment_index[0] + row > -1 && visible_segment_index[0] + row < 5 && visible_segment_index[1] + col < 3 && visible_segment_index[1] + col > -1)
+            if (visible_segment_index + index > -1 && visible_segment_index + index < 5)
             {
-                if (map_segment_arr[visible_segment_index[0] + row, visible_segment_index[1] + col] != null)
+                if (map_segment_arr[visible_segment_index + index] != null)
                 {
-                    visible_segment_index[0] += row;
-                    visible_segment_index[1] += col;
+                    visible_segment_index += index;
 
-                    MapSegmentObject visibleMapSegment = map_segment_arr[visible_segment_index[0], visible_segment_index[1]];
-                    MapSegmentObject oldVisibleMapSegment = map_segment_arr[visible_segment_index[0] - row, visible_segment_index[1] - col];
+                    MapSegmentObject visibleMapSegment = map_segment_arr[visible_segment_index];
+                    MapSegmentObject oldVisibleMapSegment = map_segment_arr[visible_segment_index - index];
                     visibleMapSegment.SetVisible(true, MyCanvas);
                     oldVisibleMapSegment.SetVisible(false, MyCanvas);
 
@@ -37,23 +36,23 @@ namespace Optimal_Route_Calculator
             }
         }
 
-        public int[] GetVisibleSegmentIndex
+        public int GetVisibleSegmentIndex
         {
             get { return visible_segment_index; }
             set { visible_segment_index = value; }
         }
         public MapSegmentObject VisibleSegment() 
         {
-            return map_segment_arr[visible_segment_index[0], visible_segment_index[1]];
+            return map_segment_arr[visible_segment_index];
         }
 
-        public MapSegmentObject[,] GetMapSegmentArr()
+        public MapSegmentObject[] GetMapSegmentArr()
         {
             return map_segment_arr; 
         }
-        public void SetMapSegmentArr(int row, int col, MapSegmentObject mapSegment)
+        public void SetMapSegmentArr(int index, MapSegmentObject mapSegment)
         {
-            map_segment_arr[row,col] = mapSegment;
+            map_segment_arr[index] = mapSegment;
         }
     }
 }

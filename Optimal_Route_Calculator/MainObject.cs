@@ -15,7 +15,7 @@ namespace Optimal_Route_Calculator
         protected bool visible = true;
         protected double getLeft;
         protected double getTop;
-        protected int[] map_segment_index = new int[2];
+        protected int map_segment_index;
         public virtual double GetLeft
         {
             get { return getLeft; }
@@ -43,7 +43,7 @@ namespace Optimal_Route_Calculator
             }
         }
 
-        public virtual int[] GetMapSegmentIndex
+        public virtual int GetMapSegmentIndex
         {
             get { return map_segment_index; }
             set { map_segment_index = value; }

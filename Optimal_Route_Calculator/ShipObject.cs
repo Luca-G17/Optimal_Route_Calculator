@@ -62,7 +62,7 @@ namespace Optimal_Route_Calculator
             }
          
             
-            if (waypoint_angle > windConeAngles[0] || waypoint_angle < windConeAngles[1])
+            if (waypoint_angle >= windConeAngles[0] || waypoint_angle <= windConeAngles[1])
             {
                 return true;
             }

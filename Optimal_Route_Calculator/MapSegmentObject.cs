@@ -30,9 +30,9 @@ namespace Optimal_Route_Calculator
         private double width;
 
 
-        public MapSegmentObject(Canvas MyCanvas, int Row, int Col, FullMapObject fullMap)
+        public MapSegmentObject(Canvas MyCanvas, int index, FullMapObject fullMap)
         {
-            uri = ($"pack://application:,,,/Images/Map {Col},{Row}.JPG");
+            uri = ($"pack://application:,,,/Images/Map{index}.JPG");
             bitmapImage = new BitmapImage(new Uri(uri));
             Skin.ImageSource = bitmapImage;
 
@@ -41,14 +41,13 @@ namespace Optimal_Route_Calculator
 
             shape = new Rectangle { Width = width, Height = height, Fill = Skin };
 
-            map_segment_index[0] = Row;
-            map_segment_index[1] = Col;
+            map_segment_index = index;
              
             Canvas.SetLeft(shape, GetLeft);
             Canvas.SetTop(shape, GetTop);
             Canvas.SetZIndex(shape, -1);
 
-            fullMap.SetMapSegmentArr(Row, Col, this);
+            fullMap.SetMapSegmentArr(index, this);
         }
         public List<MainObject> GetWaypointsAndLines()
         {
@@ -91,12 +90,6 @@ namespace Optimal_Route_Calculator
         {
             get { return bitmapImage; }
         }
-        public int[] GetSegmentIndex
-        {
-            get { return map_segment_index; }
-            set { map_segment_index = value; }
-        }
-
         public string GetUri
         {
             get { return uri; }

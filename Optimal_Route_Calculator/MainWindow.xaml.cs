@@ -25,8 +25,8 @@ namespace Optimal_Route_Calculator
         private WindArrow WindArrow;
         private const double WAYPOINT_RADIUS = 25;
 
-        private double HEIGHT = 550;
-        private double WIDTH = 1200;
+        private double HEIGHT = 620;
+        private double WIDTH = 1250;
 
         public MainWindow()
         {
@@ -41,21 +41,17 @@ namespace Optimal_Route_Calculator
         }
         private void GenerateMap()
         {
-            for (int i = 0; i < 3; i++)
-            {
-                for (int f = 0; f < 5; f++)
+            for (int i = 0; i < 5; i++)
+            {            
+                //Find a better method to check if image exists
+                try
                 {
-                    //Find a better method to check if image exists
-                    try
-                    {
-                        new BitmapImage(new Uri($"pack://application:,,,/Images/Map {i},{f}.JPG"));
-                        new MapSegmentObject(MyCanvas, f, i, fullMap);
-                    }
-                    catch (IOException e)
-                    {
-                    }
+                    new BitmapImage(new Uri($"pack://application:,,,/Images/Map{i}.JPG"));
+                    new MapSegmentObject(MyCanvas, i, fullMap);
                 }
-
+                catch (IOException e)
+                {
+                }
             }
             WindArrow = new WindArrow(MyCanvas);
         }
@@ -69,19 +65,11 @@ namespace Optimal_Route_Calculator
         {
             if (e.Key == Key.D)
             {
-                fullMap.SetVisiblePos(MyCanvas, 0, 1);
+                fullMap.SetVisiblePos(MyCanvas, 1);
             }
             if (e.Key == Key.A)
             {
-                fullMap.SetVisiblePos(MyCanvas, 0, -1);
-            }
-            if (e.Key == Key.W)
-            {
-                fullMap.SetVisiblePos(MyCanvas, -1, 0);
-            }
-            if (e.Key == Key.S)
-            {
-                fullMap.SetVisiblePos(MyCanvas, 1, 0);
+                fullMap.SetVisiblePos(MyCanvas, -1);
             }
         }
 
@@ -118,49 +106,39 @@ namespace Optimal_Route_Calculator
             double[] tack_cone = ((Waypoint)next_point).getMaxTackCone;
             double angle_to_waypoint = (180 / Math.PI) * Math.Atan2(-visible_segment.GetShip.GetTop + next_point.GetTop + WAYPOINT_RADIUS, -visible_segment.GetShip.GetLeft + next_point.GetLeft + WAYPOINT_RADIUS);
 
-            // If the ship is out of range of the next waypoint it will calculate a new tack
-            if (Hypotenuse(visible_segment.GetShip.GetLeft - next_point.GetLeft + WAYPOINT_RADIUS, visible_segment.GetShip.GetTop - next_point.GetTop + WAYPOINT_RADIUS) > WAYPOINT_RADIUS)
+            
+            // If the ship can sail towards the waypoint then it will
+            if (visible_segment.GetShip.CanSailTowards(angle_to_waypoint))
             {
-                // If the ship can sail towards the waypoint
-                if (visible_segment.GetShip.CanSailTowards(angle_to_waypoint))
-                {
-                    nextLoc[0] += next_point.GetLeft + WAYPOINT_RADIUS;
-                    nextLoc[1] += next_point.GetTop + WAYPOINT_RADIUS;
-                    PlaceRouteLine(visible_segment.GetShip, nextLoc, next_point_index - 1);
-                    visible_segment.GetShip.GetLeft = nextLoc[0];
-                    visible_segment.GetShip.GetTop = nextLoc[1];
-                }
-                else
-                {
-                    double[] shipPos = { visible_segment.GetShip.GetLeft, visible_segment.GetShip.GetTop };
-                    double[] waypointPos = { next_point.GetLeft, next_point.GetTop };
-                    double[] tack_intersect = { 0, 0 };
-                    double[] wind_intersect = { 0, 0 };
-                    double inactive_wind_cone = visible_segment.GetShip.GetWindConeAngles(2);
+                nextLoc[0] += next_point.GetLeft + WAYPOINT_RADIUS;
+                nextLoc[1] += next_point.GetTop + WAYPOINT_RADIUS;
+                PlaceRouteLine(visible_segment.GetShip, nextLoc, next_point_index - 1);
+                visible_segment.GetShip.GetLeft = nextLoc[0];
+                visible_segment.GetShip.GetTop = nextLoc[1];
+            }
+            else
+            {
+                double[] shipPos = { visible_segment.GetShip.GetLeft, visible_segment.GetShip.GetTop };
+                double[] waypointPos = { next_point.GetLeft + WAYPOINT_RADIUS, next_point.GetTop + WAYPOINT_RADIUS };
+                double inactive_wind_cone = visible_segment.AngleAddition(visible_segment.GetShip.GetWindConeAngles(2), 180);
 
-                    // Finds a potential end point of the next route line - this is where the edge of the wind cone intersects the other edge of the wind cone
-
+                if (Hypotenuse(shipPos[0] - waypointPos[0], shipPos[1] - waypointPos[1]) > 1)
+                {
                     // Finds a potential end point of the next route line - this is where the edge of the wind cone intersects the edge of the tacking cone
-                    
-                    // Chooses whichever line will be shorter
-                    if (inactive_wind_cone > Math.Min(tack_cone[0], tack_cone[1]) && inactive_wind_cone < Math.Max(tack_cone[0], tack_cone[1]))
+                    nextLoc = CalcLineIntersection(tack_cone[(int)tack_cone[2]], active_wind_cone, shipPos, waypointPos);
+                    if (Hypotenuse(nextLoc[0] - shipPos[0], nextLoc[1] - shipPos[1]) < 100)
                     {
+                        // Finds a potential end point of the next route line - this is where the edge of the wind cone intersects the other edge of the wind cone
                         nextLoc = CalcLineIntersection(inactive_wind_cone, active_wind_cone, shipPos, waypointPos);
                     }
-                    else
-                    {
-                        nextLoc = CalcLineIntersection(tack_cone[(int)tack_cone[2]], active_wind_cone, shipPos, waypointPos);
-
-                    }
 
                     PlaceRouteLine(visible_segment.GetShip, nextLoc, next_point_index - 1);
 
-                    
                     // Moves the ship to the end of the new Route Line
                     visible_segment.GetShip.GetLeft = nextLoc[0];
                     visible_segment.GetShip.GetTop = nextLoc[1];
 
-                    // Allows the program to switch between each edge of the tack cone
+                    // Allows the program to switch between each edge of the tack cone/wind cone
                     visible_segment.GetShip.ConeSideSwap();
                     ((Waypoint)next_point).ConeSideSwap();
 
@@ -168,6 +146,7 @@ namespace Optimal_Route_Calculator
                     CalcNextRouteLine(next_point, visible_segment);
                 }
             }
+            
 
         }
         private double[] CalcLineIntersection(double tack_cone_angle, double wind_cone_angle, double[] ship_pos, double[] waypoint_pos)
@@ -242,8 +221,7 @@ namespace Optimal_Route_Calculator
         private void PlaceWaypoint(MouseButtonEventArgs e)
         {
             Point point = e.GetPosition(MyCanvas);
-            int[] visible_segment_index = { fullMap.GetVisibleSegmentIndex[0], fullMap.GetVisibleSegmentIndex[1] };
-            if (!IsPixelLand(visible_segment_index, (int)Math.Round(point.Y), (int)Math.Round(point.X)))
+            if (PixelIsLand((int)Math.Round(point.Y), (int)Math.Round(point.X)) == false)
             {
                 Waypoint new_waypoint = new Waypoint(MyCanvas, point.X - WAYPOINT_RADIUS, point.Y - WAYPOINT_RADIUS);
                 List<MainObject> waypoints = fullMap.VisibleSegment().GetWaypointsAndLines();
@@ -261,18 +239,18 @@ namespace Optimal_Route_Calculator
             
             fullMap.VisibleSegment().AddWaypointOrLine(index, new LineObject(MyCanvas, LinePos, Brushes.Black));
         }
-        private bool IsPixelLand(int[] visible_segment,int pixel_row, int pixel_col)
+        private bool PixelIsLand(int pixel_row, int pixel_col)
         {
             MapSegmentObject Segment = fullMap.VisibleSegment();
             double[] segment_dimentions = { Segment.GetHeight, Segment.GetWidth };
-            Color color = GetPixelColor(Segment.GetRectangle, pixel_row, pixel_col, segment_dimentions);
-            if (!(color.R == 218 && color.G == 170 && color.B == 255) && !(color.R == 218 && color.G == 173 && color.B == 255))
+            Color colour = GetPixelColor(Segment.GetRectangle, pixel_row, pixel_col, segment_dimentions);
+            if (colour.R == 218 && colour.G == 170 && colour.B == 255)
             {
-                return true;
+                return false;
             }
             else
             {
-                return false;
+                return true;
             }
         }
         public Color GetPixelColor(Visual visual, int row, int col, double[] segmentDimentions)

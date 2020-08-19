@@ -103,17 +103,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Map 0,0.JPG" />
-    <Resource Include="Images\Map 1,0.JPG" />
-    <Resource Include="Images\Map 1,1.JPG" />
-    <Resource Include="Images\Map 1,2.JPG" />
-    <Resource Include="Images\Map 1,3.JPG" />
-    <Resource Include="Images\Map 2,2.JPG" />
-    <Resource Include="Images\Map 2,3.JPG" />
-    <Resource Include="Images\Map 2,4.JPG" />
+    <Resource Include="Images\Arrow.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Arrow.png" />
+    <Resource Include="Images\Map1.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Map2.JPG" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
