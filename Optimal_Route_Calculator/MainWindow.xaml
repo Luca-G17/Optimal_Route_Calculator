@@ -9,5 +9,6 @@
         Title="MainWindow">
     <Canvas Name="MyCanvas" Focusable="True" Background="LightGray" KeyUp="KeyIsUp" KeyDown="KeyIsDown" MouseLeftButtonUp="LeftMouseIsUp" MouseRightButtonUp="RightMouseIsUp">
         <Button x:Name="Plot" Content="PLOT" Click="OnPlot" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Canvas.Top="25" Canvas.Left="1070" Background="Red"/>
+        <Button x:Name="Optimise" Content="OPTIMISE" Click="OnOptimise" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Canvas.Top="50" Canvas.Left="1070" Background="Red"/>
     </Canvas>
 </Window>

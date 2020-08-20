@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
-using System.Windows.Threading;
-using System.IO;
 using System.Windows.Media.Imaging;
-using System.Runtime.InteropServices;
+using System.Windows.Shapes;
 
 namespace Optimal_Route_Calculator
 {
@@ -42,7 +37,7 @@ namespace Optimal_Route_Calculator
             shape = new Rectangle { Width = width, Height = height, Fill = Skin };
 
             map_segment_index = index;
-             
+
             Canvas.SetLeft(shape, GetLeft);
             Canvas.SetTop(shape, GetTop);
             Canvas.SetZIndex(shape, -1);
@@ -51,7 +46,7 @@ namespace Optimal_Route_Calculator
         }
         public List<MainObject> GetWaypointsAndLines()
         {
-            return waypointsLines;          
+            return waypointsLines;
         }
         public void AddWaypointOrLine(int index, MainObject mainObject)
         {
