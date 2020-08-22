@@ -32,8 +32,9 @@ namespace Optimal_Route_Calculator
             List<List<double>> open_nodes = new List<List<double>>();
 
             open_nodes.Add(start_pos);
-            ChooseNode(open_nodes, closed_nodes);
+            ChooseNodes(open_nodes, closed_nodes);
 
+            // Follows the chain of parent indexes backwards from the last node to the start node to get the route
             int node_index = closed_nodes.Count - 1;
             while (node_index != 0)
             {
@@ -41,28 +42,95 @@ namespace Optimal_Route_Calculator
                 node_index = (int)closed_nodes[node_index][4];
             }
             route_coords.Reverse();
-        }
-        public void ChooseNode(List<List<double>> openNodes, List<List<double>> closedNodes)
-        {
-            List<double> current_node = PickCurrentNode(openNodes, closedNodes);
-            if (!(current_node[0] <= end_pos[0] + 1 && current_node[0] >= end_pos[0] - 1 && current_node[1] <= end_pos[1] + 1 && current_node[1] >= end_pos[0] - 1))
-            {
-                CheckNeighbor(1, 0, current_node, openNodes, closedNodes);
-                CheckNeighbor(0, 1, current_node, openNodes, closedNodes);
-                CheckNeighbor(-1, 0, current_node, openNodes, closedNodes);
-                CheckNeighbor(0, -1, current_node, openNodes, closedNodes);
-                CheckNeighbor(1, 1, current_node, openNodes, closedNodes);
-                CheckNeighbor(-1, 1, current_node, openNodes, closedNodes);
-                CheckNeighbor(1, -1, current_node, openNodes, closedNodes);
-                CheckNeighbor(-1, -1, current_node, openNodes, closedNodes);
 
-                ChooseNode(openNodes, closedNodes);
+            KillNodes();
+        }
+        public void KillNodes()
+        {
+            // Deletes All nodes with line of sight on the node before, reducing the list of nodes whilst still following the land
+            for (int i = 0; i < route_coords.Count - 1; i++)
+            {
+                List<List<double>> nodes_to_kill = new List<List<double>>();
+                for (int f = i + 1; f < route_coords.Count - 1; f++)
+                {
+                    double[] LinePos = { route_coords[i][0], route_coords[i][1], route_coords[f][0], route_coords[f][1] };
+                    if (!LineIntersectsLand(LinePos))
+                    {
+                        nodes_to_kill.Add(route_coords[f]);
+                    }
+                }
+
+                foreach (List<double> node in nodes_to_kill)
+                {
+                    route_coords.Remove(node);
+                }
+            }
+
+            // Attempts to smooth the course by removing the first non-user generated nodes
+            route_coords.RemoveAt(0);
+            // route_coords.RemoveAt(route_coords.Count - 1);
+        }
+        public bool LineIntersectsLand(double[] line_pos)
+        {
+            // Gradient = Change in Y / Change in X
+            double grad_to_node = (line_pos[1] - line_pos[3]) / (line_pos[0] - line_pos[2]);
+            double X_dist_to_node = line_pos[0] - line_pos[2];
+            double Y_intercept = grad_to_node * -line_pos[0] + line_pos[1];
+            int LandPixelCount = 0;
+
+            double step;
+            double Y;
+            // Y = mX + c
+            if (X_dist_to_node > 0)
+            {
+                step = -2;
+            }
+            else
+            {
+                step = 2;
+            }
+            for (double i = line_pos[0]; i > line_pos[2] + 2 || i < line_pos[2] - 2; i += step)
+            {
+                Y = grad_to_node * i + Y_intercept;
+                if(MainWindow.PixelIsLand((int)Y, (int)i))
+                {
+                    LandPixelCount++;
+                }
+            }
+            if (LandPixelCount > 20)
+            {
+                return true;
+            }
+            return false;
+        }
+        public void ChooseNodes(List<List<double>> openNodes, List<List<double>> closedNodes)
+        {
+            while (openNodes.Count > 0)
+            {
+                List<double> current_node = PickCurrentNode(openNodes, closedNodes);
+                // If curren_node != end position then calculate the neighbors
+                if (!(current_node[0] <= end_pos[0] + 5 && current_node[0] >= end_pos[0] - 5 && current_node[1] <= end_pos[1] + 5 && current_node[1] >= end_pos[1] - 5))
+                {
+                    CheckNeighbor(10, 0, current_node, openNodes, closedNodes);
+                    CheckNeighbor(0, 10, current_node, openNodes, closedNodes);
+                    CheckNeighbor(-10, 0, current_node, openNodes, closedNodes);
+                    CheckNeighbor(0, -10, current_node, openNodes, closedNodes);
+                    CheckNeighbor(10, 10, current_node, openNodes, closedNodes);
+                    CheckNeighbor(-10, 10, current_node, openNodes, closedNodes);
+                    CheckNeighbor(10, -10, current_node, openNodes, closedNodes);
+                    CheckNeighbor(-10, -10, current_node, openNodes, closedNodes);
+                }
+                else
+                {
+                    break;
+                }
             }
 
         }
         public void CheckNeighbor(int x, int y, List<double> currentNode, List<List<double>> openNodes, List<List<double>> closedNodes)
         {
             List<double> neighbor = new List<double>() { currentNode[0] + x, currentNode[1] + y, currentNode[2], currentNode[3] + nodeDistance(x, y), closedNodes.IndexOf(currentNode) };
+            // If neighbor is land or is already closed then return
             if (MainWindow.PixelIsLand((int)neighbor[1], (int)neighbor[0]) || GetNode(closedNodes, neighbor) != null)
             {
                 return;
@@ -88,7 +156,7 @@ namespace Optimal_Route_Calculator
                 }
             }
         }
-        public int nodeDistance(int x, int y)
+        public double nodeDistance(int x, int y)
         {
             // If its a diagonal distance = 14 if not then distance = 10
             if (Math.Abs(x) == Math.Abs(y))
@@ -103,6 +171,7 @@ namespace Optimal_Route_Calculator
 
         public List<double> GetNode(List<List<double>> list, List<double> item)
         {
+            // Checks if the node positions are the same
             foreach (List<double> node in list)
             {
                 if (node[0] == item[0] && node[1] == item[1])
@@ -114,11 +183,12 @@ namespace Optimal_Route_Calculator
         }
         public List<double> PickCurrentNode(List<List<double>> openNodes, List<List<double>> closedNodes)
         {
-            double max_F_cost = 10001;
+            double max_F_cost = 10000;
             int node_index = 0;
+            // Looks for the node with the lowest F_cost
             foreach (List<double> node in openNodes)
             {
-                if (node[2] < max_F_cost)
+                if (node[2] <= max_F_cost)
                 {
                     node_index = openNodes.IndexOf(node);
                     max_F_cost = node[2];

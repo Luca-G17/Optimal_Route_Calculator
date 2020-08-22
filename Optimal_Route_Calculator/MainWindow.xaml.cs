@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -78,7 +79,10 @@ namespace Optimal_Route_Calculator
         private void OnPlot(object sender, RoutedEventArgs e)
         {
             MapSegmentObject visible_segment = fullMap.VisibleSegment();
-            GenerateRoute(visible_segment);
+            if (visible_segment.GetWaypointsAndLines().Count >= 3)
+            {
+                GenerateRoute(visible_segment);
+            }
         }
         private void GenerateRoute(MapSegmentObject visible_segment)
         {
@@ -242,13 +246,9 @@ namespace Optimal_Route_Calculator
             MapSegmentObject Segment = fullMap.VisibleSegment();
             double[] segment_dimentions = { Segment.GetHeight, Segment.GetWidth };
             Color colour = GetPixelColor(Segment.GetRectangle, pixel_row, pixel_col, segment_dimentions);
-            if ((colour.R <= 218 && colour.R >= 190 && colour.G <= 170 && colour.G >= 145 && colour.B <= 255 && colour.B >= 235))
+            if ((colour.R <= 225 && colour.R >= 185 && colour.G <= 180 && colour.G >= 145 && colour.B <= 255 && colour.B >= 235))
             {
                 return false;
-            }
-            else if (colour.R == 233 && colour.G == 234 && colour.B == 255)
-            {
-                return true;
             }
             else
             {
@@ -272,12 +272,14 @@ namespace Optimal_Route_Calculator
             {
                 // Creates the rectangle without drawing it
                 dc.DrawRectangle(new VisualBrush { Visual = visual, Viewbox = percentSrceenRec }, null, new Rect(0, 0, 1.0, 1.0));
+               
+                
             }
             bmpOut.Render(drawingVisual);
-
             var bytes = new byte[4];
             int iStride = 4; // = 4 * bmpOut.Width (for 32 bit graphics with 4 bytes per pixel - 4 * 8 bits per byte = 32)
             bmpOut.CopyPixels(bytes, iStride, 0);
+            drawingVisual = null;
             return Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3]);
         }
         public static Point getScreenDPI(Visual visual)
@@ -291,19 +293,20 @@ namespace Optimal_Route_Calculator
         private void OnOptimise(object sender, RoutedEventArgs e)
         {
             MapSegmentObject segment = fullMap.VisibleSegment();
-            int end_point_index = segment.GetWaypointsAndLines().Count() - 2;
-            for (int i = 1; i <= end_point_index; i += 2)
+            // Fix this to allow for more than 2 user placed waypoints
+            if (segment.GetWaypointsAndLines().Count <= 3)
             {
-                LineObject line = (LineObject)segment.GetWaypointsAndLines()[i];
+                LineObject line = (LineObject)segment.GetWaypointsAndLines()[1];
                 ShortestRouteObject short_route = new ShortestRouteObject(line.LinePos);
+                RemoveWaypoint(2);
 
-                for (int f = 10; i <= short_route.GetRouteCoords.Count - 1; f += 10)
+                for (int f = 0; f <= short_route.GetRouteCoords.Count - 1; f++)
                 {
                     List<double> node = short_route.GetRouteCoords[f];
                     double[] coords = { node[0], node[1] };
                     PlaceWaypoint(coords);
                 }
-            }
+            }            
         }
     }
 }
