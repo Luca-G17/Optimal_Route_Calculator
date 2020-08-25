@@ -155,6 +155,17 @@ namespace Optimal_Route_Calculator
             double Y_intercept = grad_to_node * -line_pos[0] + line_pos[1];
             int LandPixelCount = 0;
 
+            // If line is near-vertical Y_intercept will default to infinity
+            // This ensures that it can never be infinity
+            if (double.IsPositiveInfinity(Y_intercept))
+            {
+                Y_intercept = 99999;
+            }
+            if (double.IsNegativeInfinity(Y_intercept))
+            {
+                Y_intercept = -99999;
+            }
+
             // At Grad_to_node = 0, step = 2 | As Grad_to_node tends towards infinity, step = 0.01
             double step = 0.001 + Math.Pow(2, -Math.Abs(grad_to_node));
 
