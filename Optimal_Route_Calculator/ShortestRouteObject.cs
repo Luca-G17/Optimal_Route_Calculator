@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Permissions;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Shapes;
-using System.Xml.Schema;
+using System.Windows.Controls;
 
 namespace Optimal_Route_Calculator
 {
@@ -19,7 +14,7 @@ namespace Optimal_Route_Calculator
         private List<List<double>> route_coords = new List<List<double>>();
         private List<double> start_pos = new List<double>();
         private double[] end_pos = new double[2];
-        public ShortestRouteObject(double[] linePos)
+        public ShortestRouteObject(double[] linePos, Canvas MyCanvas)
         {
             start_pos.Add(linePos[0]);
             start_pos.Add(linePos[1]);
@@ -29,14 +24,14 @@ namespace Optimal_Route_Calculator
             end_pos[0] = linePos[2];
             end_pos[1] = linePos[3];
 
-            GenerateRoute();
+            GenerateRoute(MyCanvas);
         }
         /// <summary>
         /// 1. Runs A* pathfinding from start_pos to end_pos with a step of 5 pixels between each node
         /// 2. Kills all the unessescary nodes
-        /// 3. Repositions any remaining nodes away from land
+        /// 3. Repositions any remaining nodes away from land 
         /// </summary>
-        public void GenerateRoute()
+        public void GenerateRoute(Canvas MyCanvas)
         {
             // Node: 0 = X, 1 = Y, 2 = F_cost, 3 = G_cost, 4 = index of parent
             List<List<double>> closed_nodes = new List<List<double>>();
@@ -59,8 +54,6 @@ namespace Optimal_Route_Calculator
 
             // Kills any unessecary nodes
             KillNodes();
-
-            
 
         }
         public void KillNodes()
@@ -87,6 +80,52 @@ namespace Optimal_Route_Calculator
             // Attempts to smooth the course by removing the first non-user generated nodes
             route_coords.RemoveAt(0);
             // route_coords.RemoveAt(route_coords.Count - 1);
+        }
+        public bool LineIntersectsLand(double[] line_pos)
+        {
+            // Gradient = Change in Y / Change in X
+            double grad_to_node = (line_pos[1] - line_pos[3]) / (line_pos[0] - line_pos[2]);
+            double X_dist_to_node = line_pos[0] - line_pos[2];
+            double Y_intercept = grad_to_node * -line_pos[0] + line_pos[1];
+            int LandPixelCount = 0;
+
+            // If line is near-vertical Y_intercept will default to infinity
+            // This ensures that it can never be infinity
+            if (double.IsPositiveInfinity(Y_intercept))
+            {
+                Y_intercept = 99999;
+            }
+            if (double.IsNegativeInfinity(Y_intercept))
+            {
+                Y_intercept = -99999;
+            }
+
+            // At Grad_to_node = 0, step = 2 | As Grad_to_node tends towards infinity, step = 0.01
+            double step = 0.001 + Math.Pow(2, -Math.Abs(grad_to_node));
+
+            // Y = mX + c
+            double Y;
+
+            if (X_dist_to_node > 0)
+            {
+                step = step * -1;
+            }
+
+            for (double X = line_pos[0]; X > line_pos[2] + 1 || X < line_pos[2] - 1; X += step)
+            {
+                Y = grad_to_node * X + Y_intercept;
+                if (MainWindow.PixelIsLand((int)Y, (int)X))
+                {
+                    LandPixelCount++;
+                    // Defines how many pixels of "land" can be between two nodes before they can't see eachother
+
+                    if (LandPixelCount > 3)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
         public void CorrectNodes()
         {
@@ -147,52 +186,7 @@ namespace Optimal_Route_Calculator
             double[] adjustments = { Math.Cos(average_line_angle) * -node_shift, Math.Sin(average_line_angle) * -node_shift };
             return adjustments;
         }
-        public bool LineIntersectsLand(double[] line_pos)
-        {
-            // Gradient = Change in Y / Change in X
-            double grad_to_node = (line_pos[1] - line_pos[3]) / (line_pos[0] - line_pos[2]);
-            double X_dist_to_node = line_pos[0] - line_pos[2];
-            double Y_intercept = grad_to_node * -line_pos[0] + line_pos[1];
-            int LandPixelCount = 0;
-
-            // If line is near-vertical Y_intercept will default to infinity
-            // This ensures that it can never be infinity
-            if (double.IsPositiveInfinity(Y_intercept))
-            {
-                Y_intercept = 99999;
-            }
-            if (double.IsNegativeInfinity(Y_intercept))
-            {
-                Y_intercept = -99999;
-            }
-
-            // At Grad_to_node = 0, step = 2 | As Grad_to_node tends towards infinity, step = 0.01
-            double step = 0.001 + Math.Pow(2, -Math.Abs(grad_to_node));
-
-            // Y = mX + c
-            double Y;
-            
-            if (X_dist_to_node > 0)
-            {
-                step = step * -1;
-            }
-            
-            for (double X = line_pos[0]; X > line_pos[2] + 1 || X < line_pos[2] - 1; X += step)
-            {
-                Y = grad_to_node * X + Y_intercept;
-                if (MainWindow.PixelIsLand((int)Y, (int)X))
-                {
-                    LandPixelCount++;
-                    // Defines how many pixels of "land" can be between two nodes before they can't see eachother
-
-                    if (LandPixelCount > 3)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
+        
         public void ChooseNodes(List<List<double>> openNodes, List<List<double>> closedNodes)
         {
             while (openNodes.Count > 0)

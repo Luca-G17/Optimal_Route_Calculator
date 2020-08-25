@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 
@@ -297,7 +295,7 @@ namespace Optimal_Route_Calculator
             if (segment.GetWaypointsAndLines().Count <= 3 && segment.GetWaypointsAndLines().Count > 0)
             {
                 LineObject line = (LineObject)segment.GetWaypointsAndLines()[1];
-                ShortestRouteObject short_route = new ShortestRouteObject(line.LinePos);
+                ShortestRouteObject short_route = new ShortestRouteObject(line.LinePos, MyCanvas);
                 RemoveWaypoint(2);
 
                 for (int f = 0; f <= short_route.GetRouteCoords.Count - 1; f++)

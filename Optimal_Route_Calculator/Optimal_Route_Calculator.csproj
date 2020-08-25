@@ -58,6 +58,7 @@
     </ApplicationDefinition>
     <Compile Include="ShipObject.cs" />
     <Compile Include="ShortestRouteObject.cs" />
+    <Compile Include="TextBoxObject.cs" />
     <Compile Include="Waypoint.cs" />
     <Compile Include="WindArrow.cs" />
     <Page Include="MainWindow.xaml">
