@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Permissions;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Shapes;
+using System.Xml.Schema;
 
 namespace Optimal_Route_Calculator
 {
     class ShortestRouteObject
     {
+        // A* Pathfinding:
         // G_cost = Distance from starting node - following the route through parent nodes
         // H_cost = Straight distance from ending node
         // F_cost = G_cost + H_cost
-
+     
         private List<List<double>> route_coords = new List<List<double>>();
         private List<double> start_pos = new List<double>();
         private double[] end_pos = new double[2];
@@ -25,6 +31,11 @@ namespace Optimal_Route_Calculator
 
             GenerateRoute();
         }
+        /// <summary>
+        /// 1. Runs A* pathfinding from start_pos to end_pos with a step of 5 pixels between each node
+        /// 2. Kills all the unessescary nodes
+        /// 3. Repositions any remaining nodes away from land
+        /// </summary>
         public void GenerateRoute()
         {
             // Node: 0 = X, 1 = Y, 2 = F_cost, 3 = G_cost, 4 = index of parent
@@ -43,7 +54,14 @@ namespace Optimal_Route_Calculator
             }
             route_coords.Reverse();
 
+            // Positions nodes further away from any land detected in range
+            //CorrectNodes();
+
+            // Kills any unessecary nodes
             KillNodes();
+
+            
+
         }
         public void KillNodes()
         {
@@ -70,6 +88,65 @@ namespace Optimal_Route_Calculator
             route_coords.RemoveAt(0);
             // route_coords.RemoveAt(route_coords.Count - 1);
         }
+        public void CorrectNodes()
+        {
+            // theta(in radians) = 1 / radius
+            foreach (List<double> node in route_coords)
+            {
+                double radius = 5;
+                double[] centre = { node[0], node[1] };
+
+                double angle_step = 1 / radius;
+                List<bool> land_circle = new List<bool>();
+
+                // Searches around the circle for land pixels
+                for (double angle = 0; angle < 2 * Math.PI; angle += angle_step)
+                {
+                    // X = r * Cos(theta)
+                    // Y = r * Sin(theta)
+                    double X_Coord = centre[0] + Math.Cos(angle) * radius;
+                    double Y_coord = centre[1] + Math.Sin(angle) * radius;
+                    land_circle.Add(MainWindow.PixelIsLand((int)Y_coord, (int)X_Coord));
+                }
+
+                // Seaches for runs of land pixels, adds the index of the centre line of each run to a list
+                int run_count = 0;
+                List<int> centre_lines = new List<int>();
+                foreach (bool pixel in land_circle)
+                {
+                    if (pixel)
+                    {
+                        run_count++;
+                    }
+                    else if (run_count > 0)
+                    {
+                        centre_lines.Add(land_circle.IndexOf(pixel) - (run_count / 2));
+                        run_count = 0;
+                    }
+                }
+                if (centre_lines.Count > 0)
+                { 
+                    double[] nodeAdjustements = MoveNode(centre_lines, angle_step);
+                    node[0] += nodeAdjustements[0];
+                    node[1] += nodeAdjustements[1];
+                }
+            }
+        }
+        public double[] MoveNode(List<int> centreLines, double angleStep)
+        {
+            double node_shift = 20;
+            int average_centre_line = 0;
+            foreach (int centre_line in centreLines)
+            {
+                average_centre_line += centre_line;
+            }
+            average_centre_line = average_centre_line / centreLines.Count;
+            double average_line_angle = average_centre_line * angleStep;
+
+            //Adds [node_shift] number of pixels away from the average postion of the land
+            double[] adjustments = { Math.Cos(average_line_angle) * -node_shift, Math.Sin(average_line_angle) * -node_shift };
+            return adjustments;
+        }
         public bool LineIntersectsLand(double[] line_pos)
         {
             // Gradient = Change in Y / Change in X
@@ -78,28 +155,30 @@ namespace Optimal_Route_Calculator
             double Y_intercept = grad_to_node * -line_pos[0] + line_pos[1];
             int LandPixelCount = 0;
 
-            double step;
-            double Y;
+            // At Grad_to_node = 0, step = 2 | As Grad_to_node tends towards infinity, step = 0.01
+            double step = 0.001 + Math.Pow(2, -Math.Abs(grad_to_node));
+
             // Y = mX + c
+            double Y;
+            
             if (X_dist_to_node > 0)
             {
-                step = -2;
+                step = step * -1;
             }
-            else
+            
+            for (double X = line_pos[0]; X > line_pos[2] + 1 || X < line_pos[2] - 1; X += step)
             {
-                step = 2;
-            }
-            for (double i = line_pos[0]; i > line_pos[2] + 2 || i < line_pos[2] - 2; i += step)
-            {
-                Y = grad_to_node * i + Y_intercept;
-                if(MainWindow.PixelIsLand((int)Y, (int)i))
+                Y = grad_to_node * X + Y_intercept;
+                if (MainWindow.PixelIsLand((int)Y, (int)X))
                 {
                     LandPixelCount++;
+                    // Defines how many pixels of "land" can be between two nodes before they can't see eachother
+
+                    if (LandPixelCount > 3)
+                    {
+                        return true;
+                    }
                 }
-            }
-            if (LandPixelCount > 20)
-            {
-                return true;
             }
             return false;
         }
@@ -111,21 +190,20 @@ namespace Optimal_Route_Calculator
                 // If curren_node != end position then calculate the neighbors
                 if (!(current_node[0] <= end_pos[0] + 5 && current_node[0] >= end_pos[0] - 5 && current_node[1] <= end_pos[1] + 5 && current_node[1] >= end_pos[1] - 5))
                 {
-                    CheckNeighbor(10, 0, current_node, openNodes, closedNodes);
-                    CheckNeighbor(0, 10, current_node, openNodes, closedNodes);
-                    CheckNeighbor(-10, 0, current_node, openNodes, closedNodes);
-                    CheckNeighbor(0, -10, current_node, openNodes, closedNodes);
-                    CheckNeighbor(10, 10, current_node, openNodes, closedNodes);
-                    CheckNeighbor(-10, 10, current_node, openNodes, closedNodes);
-                    CheckNeighbor(10, -10, current_node, openNodes, closedNodes);
-                    CheckNeighbor(-10, -10, current_node, openNodes, closedNodes);
+                    CheckNeighbor(5, 0, current_node, openNodes, closedNodes);
+                    CheckNeighbor(0, 5, current_node, openNodes, closedNodes);
+                    CheckNeighbor(-5, 0, current_node, openNodes, closedNodes);
+                    CheckNeighbor(0, -5, current_node, openNodes, closedNodes);
+                    CheckNeighbor(5, 5, current_node, openNodes, closedNodes);
+                    CheckNeighbor(-5, 5, current_node, openNodes, closedNodes);
+                    CheckNeighbor(5, -5, current_node, openNodes, closedNodes);
+                    CheckNeighbor(-5, -5, current_node, openNodes, closedNodes);
                 }
                 else
                 {
                     break;
                 }
             }
-
         }
         public void CheckNeighbor(int x, int y, List<double> currentNode, List<List<double>> openNodes, List<List<double>> closedNodes)
         {
@@ -161,11 +239,11 @@ namespace Optimal_Route_Calculator
             // If its a diagonal distance = 14 if not then distance = 10
             if (Math.Abs(x) == Math.Abs(y))
             {
-                return 14;
+                return 7;
             }
             else
             {
-                return 10;
+                return 5;
             }
         }
 

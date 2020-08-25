@@ -294,7 +294,7 @@ namespace Optimal_Route_Calculator
         {
             MapSegmentObject segment = fullMap.VisibleSegment();
             // Fix this to allow for more than 2 user placed waypoints
-            if (segment.GetWaypointsAndLines().Count <= 3)
+            if (segment.GetWaypointsAndLines().Count <= 3 && segment.GetWaypointsAndLines().Count > 0)
             {
                 LineObject line = (LineObject)segment.GetWaypointsAndLines()[1];
                 ShortestRouteObject short_route = new ShortestRouteObject(line.LinePos);
@@ -307,6 +307,20 @@ namespace Optimal_Route_Calculator
                     PlaceWaypoint(coords);
                 }
             }            
+        }
+
+        private void OnReset(object sender, RoutedEventArgs e)
+        {
+            foreach (MapSegmentObject segment in fullMap.GetMapSegmentArr())
+            {
+                if (segment != null)
+                {
+                    for (int i = 0; i < segment.GetWaypointsAndLines().Count;)
+                    {
+                        segment.DelWaypointOrLine(i, MyCanvas);
+                    }
+                }
+            }
         }
     }
 }
