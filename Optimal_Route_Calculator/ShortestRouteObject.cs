@@ -14,7 +14,8 @@ namespace Optimal_Route_Calculator
         private List<List<double>> route_coords = new List<List<double>>();
         private List<double> start_pos = new List<double>();
         private double[] end_pos = new double[2];
-        public ShortestRouteObject(double[] linePos, Canvas MyCanvas)
+        private double step;
+        public ShortestRouteObject(double[] linePos, Canvas MyCanvas, double Step)
         {
             start_pos.Add(linePos[0]);
             start_pos.Add(linePos[1]);
@@ -24,8 +25,11 @@ namespace Optimal_Route_Calculator
             end_pos[0] = linePos[2];
             end_pos[1] = linePos[3];
 
+            step = Step;
+
             GenerateRoute(MyCanvas);
         }
+
         /// <summary>
         /// 1. Runs A* pathfinding from start_pos to end_pos with a step of 5 pixels between each node
         /// 2. Kills all the unessescary nodes
@@ -65,7 +69,7 @@ namespace Optimal_Route_Calculator
                 for (int f = i + 1; f < route_coords.Count - 1; f++)
                 {
                     double[] LinePos = { route_coords[i][0], route_coords[i][1], route_coords[f][0], route_coords[f][1] };
-                    if (!LineIntersectsLand(LinePos))
+                    if (!MainWindow.LineIntersectsLand(LinePos))
                     {
                         nodes_to_kill.Add(route_coords[f]);
                     }
@@ -81,52 +85,7 @@ namespace Optimal_Route_Calculator
             route_coords.RemoveAt(0);
             // route_coords.RemoveAt(route_coords.Count - 1);
         }
-        public bool LineIntersectsLand(double[] line_pos)
-        {
-            // Gradient = Change in Y / Change in X
-            double grad_to_node = (line_pos[1] - line_pos[3]) / (line_pos[0] - line_pos[2]);
-            double X_dist_to_node = line_pos[0] - line_pos[2];
-            double Y_intercept = grad_to_node * -line_pos[0] + line_pos[1];
-            int LandPixelCount = 0;
 
-            // If line is near-vertical Y_intercept will default to infinity
-            // This ensures that it can never be infinity
-            if (double.IsPositiveInfinity(Y_intercept))
-            {
-                Y_intercept = 99999;
-            }
-            if (double.IsNegativeInfinity(Y_intercept))
-            {
-                Y_intercept = -99999;
-            }
-
-            // At Grad_to_node = 0, step = 2 | As Grad_to_node tends towards infinity, step = 0.01
-            double step = 0.001 + Math.Pow(2, -Math.Abs(grad_to_node));
-
-            // Y = mX + c
-            double Y;
-
-            if (X_dist_to_node > 0)
-            {
-                step = step * -1;
-            }
-
-            for (double X = line_pos[0]; X > line_pos[2] + 1 || X < line_pos[2] - 1; X += step)
-            {
-                Y = grad_to_node * X + Y_intercept;
-                if (MainWindow.PixelIsLand((int)Y, (int)X))
-                {
-                    LandPixelCount++;
-                    // Defines how many pixels of "land" can be between two nodes before they can't see eachother
-
-                    if (LandPixelCount > 3)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
         public void CorrectNodes()
         {
             // theta(in radians) = 1 / radius
@@ -193,16 +152,16 @@ namespace Optimal_Route_Calculator
             {
                 List<double> current_node = PickCurrentNode(openNodes, closedNodes);
                 // If curren_node != end position then calculate the neighbors
-                if (!(current_node[0] <= end_pos[0] + 5 && current_node[0] >= end_pos[0] - 5 && current_node[1] <= end_pos[1] + 5 && current_node[1] >= end_pos[1] - 5))
+                if (!(current_node[0] <= end_pos[0] + step && current_node[0] >= end_pos[0] - step && current_node[1] <= end_pos[1] + step && current_node[1] >= end_pos[1] - step))
                 {
-                    CheckNeighbor(5, 0, current_node, openNodes, closedNodes);
-                    CheckNeighbor(0, 5, current_node, openNodes, closedNodes);
-                    CheckNeighbor(-5, 0, current_node, openNodes, closedNodes);
-                    CheckNeighbor(0, -5, current_node, openNodes, closedNodes);
-                    CheckNeighbor(5, 5, current_node, openNodes, closedNodes);
-                    CheckNeighbor(-5, 5, current_node, openNodes, closedNodes);
-                    CheckNeighbor(5, -5, current_node, openNodes, closedNodes);
-                    CheckNeighbor(-5, -5, current_node, openNodes, closedNodes);
+                    CheckNeighbor(step, 0, current_node, openNodes, closedNodes);
+                    CheckNeighbor(0, step, current_node, openNodes, closedNodes);
+                    CheckNeighbor(-step, 0, current_node, openNodes, closedNodes);
+                    CheckNeighbor(0, -step, current_node, openNodes, closedNodes);
+                    CheckNeighbor(step, step, current_node, openNodes, closedNodes);
+                    CheckNeighbor(-step, step, current_node, openNodes, closedNodes);
+                    CheckNeighbor(step, -step, current_node, openNodes, closedNodes);
+                    CheckNeighbor(-step, -step, current_node, openNodes, closedNodes);
                 }
                 else
                 {
@@ -210,7 +169,7 @@ namespace Optimal_Route_Calculator
                 }
             }
         }
-        public void CheckNeighbor(int x, int y, List<double> currentNode, List<List<double>> openNodes, List<List<double>> closedNodes)
+        public void CheckNeighbor(double x, double y, List<double> currentNode, List<List<double>> openNodes, List<List<double>> closedNodes)
         {
             List<double> neighbor = new List<double>() { currentNode[0] + x, currentNode[1] + y, currentNode[2], currentNode[3] + nodeDistance(x, y), closedNodes.IndexOf(currentNode) };
             // If neighbor is land or is already closed then return
@@ -239,16 +198,16 @@ namespace Optimal_Route_Calculator
                 }
             }
         }
-        public double nodeDistance(int x, int y)
+        public double nodeDistance(double x, double y)
         {
-            // If its a diagonal distance = 14 if not then distance = 10
+            // If its a diagonal distance = 1.4 if not then distance = 1
             if (Math.Abs(x) == Math.Abs(y))
             {
-                return 7;
+                return 1.4 * step;
             }
             else
             {
-                return 5;
+                return 1 * step;
             }
         }
 

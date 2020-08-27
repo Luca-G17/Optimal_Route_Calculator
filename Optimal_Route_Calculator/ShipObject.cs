@@ -6,9 +6,6 @@ namespace Optimal_Route_Calculator
 {
     class ShipObject : MainObject
     {
-        private ImageBrush Skin = new ImageBrush();
-        private string uri;
-
         private double[] windConeAngles = { 0, 0, 0 }; 
         public ShipObject()
         {

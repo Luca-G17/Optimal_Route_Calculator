@@ -56,6 +56,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ScaleObject.cs" />
     <Compile Include="ShipObject.cs" />
     <Compile Include="ShortestRouteObject.cs" />
     <Compile Include="TextBoxObject.cs" />
@@ -112,6 +113,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Map2.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Scale.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

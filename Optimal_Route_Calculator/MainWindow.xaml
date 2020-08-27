@@ -11,5 +11,7 @@
         <Button x:Name="Plot" Content="PLOT" Click="OnPlot" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Canvas.Top="25" Canvas.Left="1070" Background="Red"/>
         <Button x:Name="Optimise" Content="OPTIMISE" Click="OnOptimise" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Canvas.Top="50" Canvas.Left="1070" Background="Red"/>
         <Button x:Name="Reset" Content="RESET" Click="OnReset" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Canvas.Top="75" Canvas.Left="1070" Background="GreenYellow"/>
+        <TextBlock x:Name="StepInputTextBlock" Text="Step (Default is 5):" Margin="5, 5, 5, 5" Width="150"  Canvas.Top="130" Canvas.Left="1070"/>
+        <TextBox x:Name="StepInput" Margin="5, 5, 5, 5" Width="150" Canvas.Top="150" Canvas.Left="1070"/>
     </Canvas>
 </Window>
