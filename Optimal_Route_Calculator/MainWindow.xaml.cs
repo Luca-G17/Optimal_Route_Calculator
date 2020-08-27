@@ -27,6 +27,7 @@ namespace Optimal_Route_Calculator
         private readonly double WIDTH = 1250;
 
         private double node_seperation = 5;
+        private double wind_angle = 40;
 
         public MainWindow()
         {
@@ -64,24 +65,46 @@ namespace Optimal_Route_Calculator
             {
                 StepChanged();
             }
+            if (WindAngleInput.Text != "" && WindAngleInput.Text != wind_angle.ToString())
+            {
+                ChangeWindAngle();
+            }
         }
 
         #region UserInputs
-        private void StepChanged()
+        private bool numValidate(string inp)
         {
-            bool good_num = true;
-            string inp = StepInput.Text;
             foreach (char character in inp)
             {
                 // ASCII: 48 = '0', 57 = '9', 46 = '.'
                 if (((int)character < 48 || (int)character > 57) && (int)character != 46)
                 {
-                    good_num = false;
+                    return false;
                 }
             }
-            if (good_num)
+            return true;
+        }
+
+        private void ChangeWindAngle()
+        {
+            // WindAngle = How close the boat can point to the wind (Default = 40 degrees either side)
+            string input = WindAngleInput.Text;
+            if (numValidate(input))
             {
-                node_seperation = Convert.ToDouble(inp);
+                double new_angle = Convert.ToDouble(input);        
+                if (new_angle < 45 && new_angle >= 0)
+                {
+                    fullMap.VisibleSegment().GetShip.GetBoatToWind = wind_angle;
+                    wind_angle = new_angle;
+                }
+            }
+        }
+        private void StepChanged()
+        {
+            string input = StepInput.Text;
+            if (numValidate(input))
+            {
+                node_seperation = Convert.ToDouble(input);
             }
         }
         private void KeyIsUp(object sender, KeyEventArgs e)
@@ -132,6 +155,7 @@ namespace Optimal_Route_Calculator
             {
                 if (segment != null)
                 {
+                    segment.DelRouteLines(MyCanvas);
                     for (int i = 0; i < segment.GetWaypointsAndLines().Count;)
                     {
                         segment.DelWaypointOrLine(i, MyCanvas);
@@ -155,7 +179,7 @@ namespace Optimal_Route_Calculator
             for (int i = 0; i < fullMap.VisibleSegment().GetWaypointsAndLines().Count(); i += 2)
             {
                 MainObject waypoint = fullMap.VisibleSegment().GetWaypointsAndLines()[i];
-                if (Hypotenuse(waypoint.GetLeft + WAYPOINT_RADIUS - point.X, waypoint.GetTop + WAYPOINT_RADIUS - point.Y) < WAYPOINT_RADIUS)
+                if (Hypotenuse(waypoint.GetLeft + WAYPOINT_RADIUS - point.X, waypoint.GetTop + WAYPOINT_RADIUS - point.Y) <= WAYPOINT_RADIUS)
                 {
                     RemoveWaypoint(i);
                 }
@@ -279,7 +303,7 @@ namespace Optimal_Route_Calculator
             }
             else if (segment.GetWaypointsAndLines().Count != index)
             {
-                segment.DelWaypointOrLine(index + 1, MyCanvas);
+                segment.DelWaypointOrLine(index, MyCanvas);
             }
 
 

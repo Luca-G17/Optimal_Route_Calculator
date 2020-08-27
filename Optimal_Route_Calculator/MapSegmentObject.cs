@@ -54,14 +54,19 @@ namespace Optimal_Route_Calculator
         }
         public void DelWaypointOrLine(int index, Canvas MyCanvas)
         {
-            // If its a LineObject it will remove its RouteLines
-            if (index % 2 != 0 && index != 0)
-            {
-                LineObject line = ((LineObject)waypointsLines[index]);
-                line.ChangeRouteLineVisibility(MyCanvas);
-            }
             waypointsLines[index].SetVisible(false, MyCanvas);
             waypointsLines.RemoveAt(index);
+        }
+        public void DelRouteLines(Canvas MyCanvas)
+        {
+            // If its a LineObject it will remove its RouteLines
+            for (int i = 0; i < waypointsLines.Count - 1; i++)
+            {
+                if (i % 2 != 0)
+                {
+                    ((LineObject)waypointsLines[i]).ChangeRouteLineVisibility(MyCanvas);
+                }
+            }
         }
         public void ChangeObjectVisibility(Canvas MyCanvas)
         {

@@ -6,7 +6,8 @@ namespace Optimal_Route_Calculator
 {
     class ShipObject : MainObject
     {
-        private double[] windConeAngles = { 0, 0, 0 }; 
+        private double[] windConeAngles = { 0, 0, 0 };
+        private double boat_to_wind = 40;
         public ShipObject()
         {
 
@@ -37,8 +38,8 @@ namespace Optimal_Route_Calculator
         public void GenerateWindConeAngles(double wind_angle)
         {
             wind_angle = AngleAddition(wind_angle, 180);
-            windConeAngles[0] = AngleAddition(wind_angle, 40);
-            windConeAngles[1] = AngleAddition(wind_angle, -40);
+            windConeAngles[0] = AngleAddition(wind_angle, boat_to_wind);
+            windConeAngles[1] = AngleAddition(wind_angle, -boat_to_wind);
             windConeAngles[2] = 0;
         }
 
@@ -71,6 +72,7 @@ namespace Optimal_Route_Calculator
                 windConeAngles[2] -= 1;
             }
         }
+        public double GetBoatToWind { set { boat_to_wind = value; } }
 
     }
 }
