@@ -1,0 +1,23 @@
+﻿<Window x:Class="Optimal_Route_Calculator.HelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Optimal_Route_Calculator"
+        mc:Ignorable="d"
+        Title="HelpWindow" Height="450" Width="1000">
+    <Grid>
+        <StackPanel>
+            <TextBlock Text=" WAYPOINTS:" FontSize="20"  />
+            <TextBlock Text="  - Place waypoints on the map by pressing the left mouse button over the sea&#x0a;  - Delete a waypoint by pressing on the right mouse button over a waypoint"
+                       FontSize="20" FontWeight="Thin" Style="{StaticResource CustomFont}" Height="54" Margin="0,0,0.333,0"/>
+            <TextBlock Text=" PATHFINDING:" FontSize="20" />
+            <TextBlock Text="  - Pressing the optimise button will run A* pathfinding between each waypoint (WARNING: Can take up to 30s)&#x0a;  - Increasing the step value will decrease loading time but the route might be less accurate" 
+                       FontSize="20" FontWeight="Thin" Style="{StaticResource CustomFont}"/>
+            <TextBlock Text=" PLOTTING:" FontSize="20" />
+            <TextBlock Text="  - Pressing the plot button will plot the route between each waypoint&#x0a;  - If travelling upwind this will plot a tacking route, 40º either side of the wind" 
+                       FontSize="20" FontWeight="Light" Style="{StaticResource CustomFont}"/>
+
+        </StackPanel>
+    </Grid>
+</Window>

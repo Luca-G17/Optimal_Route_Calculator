@@ -53,6 +53,7 @@ namespace Optimal_Route_Calculator
             }
             route_coords.Reverse();
 
+            // TODO: Fix this - repositions nodes in the wrong directions
             // Positions nodes further away from any land detected in range
             //CorrectNodes();
 

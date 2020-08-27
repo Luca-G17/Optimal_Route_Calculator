@@ -13,3 +13,6 @@ C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\ob
 C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\Optimal_Route_Calculator.csproj.CoreCompileInputs.cache
 C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\Optimal_Route_Calculator.exe
 C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\Optimal_Route_Calculator.pdb
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\HelpWindow.g.cs
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\HelpWindow.baml
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\App.baml

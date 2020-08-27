@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/scale.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("fonts.xml")]
 
 

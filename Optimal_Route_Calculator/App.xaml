@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:Optimal_Route_Calculator"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style x:Key="CustomFont" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="/Fonts/Roboto-Thin.ttf"/>
+        </Style>
     </Application.Resources>
 </Application>
