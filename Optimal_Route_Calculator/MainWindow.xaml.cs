@@ -18,7 +18,8 @@ namespace Optimal_Route_Calculator
     {
         DispatcherTimer gameTimer = new DispatcherTimer();
         static FullMapObject fullMap = new FullMapObject();
-        WindArrow WindArrow;
+        WindArrow windArrow;
+        TextBlockObject windSpeedIndicator;
         ScaleObject Scale;
 
         private const double WAYPOINT_RADIUS = 25;
@@ -47,8 +48,8 @@ namespace Optimal_Route_Calculator
         {
             double[] loc = { 51.059772, -1.310142 };
             var wind_data = await WindAPIProcessor.LoadWindData(loc);
-            WindArrow.GetRotation = wind_data.wind_bearing;
-
+            windArrow.GetRotation = wind_data.wind_bearing;
+            windSpeedIndicator.SetMessage = $"Wind Speed: {wind_data.wind_speed}Kts";
         }
         public void GenerateMap()
         {
@@ -65,7 +66,8 @@ namespace Optimal_Route_Calculator
                 }
             }
             fullMap.SetVisiblePos(MyCanvas, -1);
-            WindArrow = new WindArrow(MyCanvas);
+            windArrow = new WindArrow(MyCanvas);
+            windSpeedIndicator = new TextBlockObject(0, 0, "Wind Speed: 0 Kts", MyCanvas);
             Scale = new ScaleObject(MyCanvas);
         }
         private void MainLoop(object sender, EventArgs e)
@@ -211,7 +213,7 @@ namespace Optimal_Route_Calculator
             {
                 MainObject nextPoint = visible_segment.GetWaypointsAndLines()[i];
                 ((Waypoint)nextPoint).GenerateMaxTackCone(visible_segment.GetShip.GetLeft, visible_segment.GetShip.GetTop);
-                visible_segment.GetShip.GenerateWindConeAngles(WindArrow.GetRotation);
+                visible_segment.GetShip.GenerateWindConeAngles(windArrow.GetRotation);
                 CalcNextRouteLine(nextPoint, visible_segment);
             }
         }

@@ -13,12 +13,13 @@ namespace Optimal_Route_Calculator
     {
         public Dictionary<string, string> Currently { get; set; }
 
-        public double wind_speed;
+        public string wind_speed;
         public double wind_bearing;
 
         public void setWindData()
         {
-            wind_speed = Convert.ToDouble(Currently["windSpeed"]);
+            double windSpeed = Math.Round(Convert.ToDouble(Currently["windSpeed"]) * 1.943844, 2);
+            wind_speed = Convert.ToString(windSpeed);
             wind_bearing = Convert.ToDouble(Currently["windBearing"]);
         }
 

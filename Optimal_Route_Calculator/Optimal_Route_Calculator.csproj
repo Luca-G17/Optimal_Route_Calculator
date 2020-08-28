@@ -69,7 +69,7 @@
     <Compile Include="ScaleObject.cs" />
     <Compile Include="ShipObject.cs" />
     <Compile Include="ShortestRouteObject.cs" />
-    <Compile Include="TextBoxObject.cs" />
+    <Compile Include="TextBlockObject.cs" />
     <Compile Include="Waypoint.cs" />
     <Compile Include="WindAPIProcessor.cs" />
     <Compile Include="WindArrow.cs" />
