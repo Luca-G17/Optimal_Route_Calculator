@@ -28,18 +28,11 @@ namespace Optimal_Route_Calculator
             Skin.ImageSource = bitmapImage;
 
             shape = new Rectangle { Width = width, Height = height, Fill = Skin };
-            rotate.CenterX = 70;
-            rotate.CenterY = 60;
+            rotate.CenterX = 30;
+            rotate.CenterY = 20;
 
             GetTop = top;
             GetLeft = left;
-            
-            //Delete this later:
-            #region 
-            rotate.Angle = 45;
-            rotateAngle = 45;
-            shape.RenderTransform = rotate;
-            #endregion
 
             Canvas.SetLeft(shape, GetLeft);
             Canvas.SetTop(shape, GetTop);

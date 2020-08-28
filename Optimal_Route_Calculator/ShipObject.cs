@@ -45,12 +45,14 @@ namespace Optimal_Route_Calculator
 
         public bool CanSailTowards(double waypoint_angle)
         {
+            /*
             if (!(waypoint_angle > 90 && waypoint_angle < 180))
             {
                 waypoint_angle = Math.Abs(waypoint_angle);
                 waypoint_angle = AngleAddition(-waypoint_angle, 360);
             }
-         
+            
+            
             
             if (waypoint_angle >= windConeAngles[0] || waypoint_angle <= windConeAngles[1])
             {
@@ -59,6 +61,17 @@ namespace Optimal_Route_Calculator
             else
             {
                 return false;
+            }
+            */
+
+            double angle_diff = (AngleAddition(windConeAngles[1], (boat_to_wind / 2)) - waypoint_angle + 180 + 360) % 360 - 180;
+            if (angle_diff <= boat_to_wind && angle_diff >= -boat_to_wind)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
         public override void ConeSideSwap()

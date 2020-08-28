@@ -78,6 +78,7 @@ namespace Optimal_Route_Calculator
             {
                 ChangeWindAngle();
             }
+
         }
 
         #region UserInputs

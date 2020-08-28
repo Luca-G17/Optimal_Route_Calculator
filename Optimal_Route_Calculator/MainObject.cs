@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Optimal_Route_Calculator
@@ -45,13 +46,13 @@ namespace Optimal_Route_Calculator
 
         public virtual double AngleAddition(double angle1, double angle2)
         {
-            if (angle1 + angle2 > 360)
+            if (angle1 + angle2 >= 360)
             {
                 return (angle1 + angle2 - 360);
             }
             else if (angle1 + angle2 < 0)
             {
-                return 360 - (angle1 + angle2 - 360);
+                return 360 - Math.Abs(angle1 + angle2);
             }
             else
             {

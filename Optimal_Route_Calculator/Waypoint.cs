@@ -27,8 +27,8 @@ namespace Optimal_Route_Calculator
 
         public void GenerateMaxTackCone(double ship_x, double ship_y)
         {
-            double tack_cone_centre = (180 / Math.PI) * Math.Atan2(-getTop + ship_y - 25, -getLeft + ship_x - 25);
-            tack_cone_centre = Math.Abs(tack_cone_centre);
+            double tack_cone_centre = (180 / Math.PI) * Math.Atan2(getTop - ship_y + 25, getLeft - ship_x + 25);
+            tack_cone_centre = AngleAddition(tack_cone_centre, 180);
             maxTackingCone[0] = AngleAddition(tack_cone_centre, -10);
             maxTackingCone[1] = AngleAddition(tack_cone_centre, 10);
             maxTackingCone[2] = 0;
