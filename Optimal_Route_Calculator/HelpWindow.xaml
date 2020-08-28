@@ -10,9 +10,9 @@
         <StackPanel>
             <TextBlock Text=" WAYPOINTS:" FontSize="20"  />
             <TextBlock Text="  - Place waypoints on the map by pressing the left mouse button over the sea&#x0a;  - Delete a waypoint by pressing on the right mouse button over a waypoint"
-                       FontSize="20" FontWeight="Thin" Style="{StaticResource CustomFont}" Height="54" Margin="0,0,0.333,0"/>
+                       FontSize="20" FontWeight="Thin" Style="{StaticResource CustomFont}"/>
             <TextBlock Text=" PATHFINDING:" FontSize="20" />
-            <TextBlock Text="  - Pressing the optimise button will run A* pathfinding between each waypoint (WARNING: Can take up to 30s)&#x0a;  - Increasing the step value will decrease loading time but the route might be less accurate" 
+            <TextBlock Text="  - Pressing the optimise button will run A* pathfinding between each waypoint (WARNING: Can take up to 30s)&#x0a;  - Increasing the step value will decrease pathfinding time but the route might be less accurate" 
                        FontSize="20" FontWeight="Thin" Style="{StaticResource CustomFont}"/>
             <TextBlock Text=" PLOTTING:" FontSize="20" />
             <TextBlock Text="  - Pressing the plot button will plot the route between each waypoint&#x0a;  - If travelling upwind this will plot a tacking route, 40º either side of the wind" 

@@ -32,6 +32,8 @@ namespace Optimal_Route_Calculator
         public MainWindow()
         {
             InitializeComponent();
+            APIManager.InitialiseClient();
+            WindAPICall();
             GenerateMap();
             gameTimer.Tick += MainLoop;
             gameTimer.Interval = TimeSpan.FromMilliseconds(20);
@@ -40,6 +42,13 @@ namespace Optimal_Route_Calculator
 
             Height = HEIGHT;
             Width = WIDTH;
+        }
+        private async void WindAPICall()
+        {
+            double[] loc = { 51.059772, -1.310142 };
+            var wind_data = await WindAPIProcessor.LoadWindData(loc);
+            WindArrow.GetRotation = wind_data.wind_bearing;
+
         }
         public void GenerateMap()
         {

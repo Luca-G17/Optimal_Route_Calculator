@@ -47,8 +47,8 @@ namespace Optimal_Route_Calculator
         {
             set 
             {
-                rotateAngle = AngleAddition(rotateAngle, value);
-                rotate.Angle = value;
+                rotate.Angle = AngleAddition(value, -90) - rotateAngle;
+                rotateAngle += rotate.Angle; 
                 shape.RenderTransform = rotate;
             }
             get { return rotateAngle; }
