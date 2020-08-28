@@ -28,6 +28,8 @@ namespace Optimal_Route_Calculator
             Skin.ImageSource = bitmapImage;
 
             shape = new Rectangle { Width = width, Height = height, Fill = Skin };
+            rotate.CenterX = 70;
+            rotate.CenterY = 60;
 
             GetTop = top;
             GetLeft = left;
