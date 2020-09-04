@@ -66,8 +66,8 @@
     <Compile Include="HelpWindow.xaml.cs">
       <DependentUpon>HelpWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ScaleObject.cs" />
     <Compile Include="ShipObject.cs" />
+    <Compile Include="ShipsandWaypoints.cs" />
     <Compile Include="ShortestRouteObject.cs" />
     <Compile Include="TextBlockObject.cs" />
     <Compile Include="Waypoint.cs" />

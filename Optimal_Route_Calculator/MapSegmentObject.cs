@@ -12,35 +12,30 @@ namespace Optimal_Route_Calculator
 
     class MapSegmentObject : MainObject
     {
-        private ImageBrush Skin = new ImageBrush();
-        private BitmapImage bitmapImage;
+        private readonly ImageBrush Skin = new ImageBrush();
+        private readonly BitmapImage bitmapImage;
 
-        private List<MainObject> waypointsLines = new List<MainObject>(); // Waypoint -- Line -- Waypoint -- Line -- Waypoint
-        private ShipObject ship = new ShipObject();
+        private readonly List<MainObject> waypointsLines = new List<MainObject>(); // Waypoint -- Line -- Waypoint -- Line -- Waypoint
 
-        private string uri;
-        private int mapNum;
+        private readonly string uri;
 
-        private double height;
-        private double width;
-
-
-        public MapSegmentObject(Canvas MyCanvas, int index, FullMapObject fullMap)
+        public MapSegmentObject(int index, FullMapObject fullMap, double distanceScalar)
         {
             uri = ($"pack://application:,,,/Images/Map{index}.JPG");
             bitmapImage = new BitmapImage(new Uri(uri));
             Skin.ImageSource = bitmapImage;
 
-            height = bitmapImage.Height;
-            width = bitmapImage.Width;
+            GetHeight = bitmapImage.Height;
+            GetWidth = bitmapImage.Width;
 
-            shape = new Rectangle { Width = width, Height = height, Fill = Skin };
+            shape = new Rectangle { Width = GetWidth, Height = GetHeight, Fill = Skin };
 
             map_segment_index = index;
+            GetScalar = distanceScalar;
 
             Canvas.SetLeft(shape, GetLeft);
             Canvas.SetTop(shape, GetTop);
-            Canvas.SetZIndex(shape, -1);
+            Panel.SetZIndex(shape, -1);
 
             fullMap.SetMapSegmentArr(index, this);
         }
@@ -65,8 +60,23 @@ namespace Optimal_Route_Calculator
                 if (i % 2 != 0)
                 {
                     ((LineObject)waypointsLines[i]).ChangeRouteLineVisibility(MyCanvas);
+                    ((LineObject)waypointsLines[i]).KillRouteLines();
                 }
             }
+
+        }
+        public override void SetVisible(bool Visable, Canvas MyCanvas)
+        {
+            visible = Visable;
+            if (visible)
+            {
+                MyCanvas.Children.Add(shape);
+            }
+            else
+            {
+                MyCanvas.Children.Remove(shape);
+            }
+            ChangeObjectVisibility(MyCanvas);
         }
         public void ChangeObjectVisibility(Canvas MyCanvas)
         {
@@ -86,34 +96,9 @@ namespace Optimal_Route_Calculator
         {
             get { return shape; }
         }
-        public BitmapImage GetBitmap
-        {
-            get { return bitmapImage; }
-        }
-        public string GetUri
-        {
-            get { return uri; }
-        }
-        public int MapNum
-        {
-            get { return mapNum; }
-            set { mapNum = value; }
-        }
-        public double GetHeight
-        {
-            get { return height; }
-            set { height = value; }
-        }
-        public double GetWidth
-        {
-            get { return width; }
-            set { width = value; }
-        }
-
-        public ShipObject GetShip
-        {
-            get { return ship; }
-        }
-
+        public double GetHeight { get; }
+        public double GetWidth { get; }
+        public ShipObject GetShip { get; } = new ShipObject();
+        public double GetScalar { get; }
     }
 }

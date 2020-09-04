@@ -6,16 +6,14 @@ using System.Windows.Media;
 
 namespace Optimal_Route_Calculator
 {
-    class Waypoint : MainObject
+    class Waypoint : MainObject, IShipsandWaypoints
     {
-        private double width = 50;
-        private double height = 50;
-
-        private double[] maxTackingCone = { 0, 0, 0 };
+        private readonly double Width = 50;
+        private readonly double Height = 50;
 
         public Waypoint(Canvas MyCanvas, double SetLeft, double SetTop)
         {
-            shape = new Ellipse { Width = width, Height = height, Stroke = Brushes.Red, Fill = Brushes.Transparent};
+            shape = new Ellipse { Width = Width, Height = Height, Stroke = Brushes.Red, Fill = Brushes.Transparent};
 
             getLeft = SetLeft;
             getTop = SetTop;
@@ -29,23 +27,20 @@ namespace Optimal_Route_Calculator
         {
             double tack_cone_centre = (180 / Math.PI) * Math.Atan2(getTop - ship_y + 25, getLeft - ship_x + 25);
             tack_cone_centre = AngleAddition(tack_cone_centre, 180);
-            maxTackingCone[0] = AngleAddition(tack_cone_centre, -10);
-            maxTackingCone[1] = AngleAddition(tack_cone_centre, 10);
-            maxTackingCone[2] = 0;
-        } 
-        public double[] getMaxTackCone
-        {
-            get { return maxTackingCone; }
+            GetMaxTackCone[0] = AngleAddition(tack_cone_centre, -10);
+            GetMaxTackCone[1] = AngleAddition(tack_cone_centre, 10);
+            GetMaxTackCone[2] = 0;
         }
-        public override void ConeSideSwap()
+        public double[] GetMaxTackCone { get; } = { 0, 0, 0 };
+        public void ConeSwapSide()
         {
-            if (maxTackingCone[2] == 0)
+            if (GetMaxTackCone[2] == 0)
             {
-                maxTackingCone[2] += 1;
+                GetMaxTackCone[2] += 1;
             }
             else
             {
-                maxTackingCone[2] -= 1;
+                GetMaxTackCone[2] -= 1;
             }
         }
 

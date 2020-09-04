@@ -60,10 +60,6 @@ namespace Optimal_Route_Calculator
             }
         }
 
-        public virtual void ConeSideSwap()
-        {
-        }
-
     }
 
 }

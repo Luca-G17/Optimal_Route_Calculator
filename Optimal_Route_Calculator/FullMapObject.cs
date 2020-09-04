@@ -4,41 +4,32 @@ namespace Optimal_Route_Calculator
 {
     class FullMapObject
     {
-        private MapSegmentObject[] map_segment_arr = new MapSegmentObject[5];
+        private readonly MapSegmentObject[] map_segment_arr = new MapSegmentObject[5];
 
-        private int visible_segment_index = 2; 
         public FullMapObject()
         {
 
         }
         public void SetVisiblePos(Canvas MyCanvas, int index)
         {
-            if (visible_segment_index + index > -1 && visible_segment_index + index < 5)
+            if (GetVisibleSegmentIndex + index > -1 && GetVisibleSegmentIndex + index < 5)
             {
-                if (map_segment_arr[visible_segment_index + index] != null)
+                if (map_segment_arr[GetVisibleSegmentIndex + index] != null)
                 {
-                    visible_segment_index += index;
+                    GetVisibleSegmentIndex += index;
 
-                    MapSegmentObject visibleMapSegment = map_segment_arr[visible_segment_index];
-                    MapSegmentObject oldVisibleMapSegment = map_segment_arr[visible_segment_index - index];
+                    MapSegmentObject visibleMapSegment = map_segment_arr[GetVisibleSegmentIndex];
+                    MapSegmentObject oldVisibleMapSegment = map_segment_arr[GetVisibleSegmentIndex - index];
                     visibleMapSegment.SetVisible(true, MyCanvas);
                     oldVisibleMapSegment.SetVisible(false, MyCanvas);
-
-
-                    visibleMapSegment.ChangeObjectVisibility(MyCanvas);
-                    oldVisibleMapSegment.ChangeObjectVisibility(MyCanvas);
                 }
             }
         }
 
-        public int GetVisibleSegmentIndex
-        {
-            get { return visible_segment_index; }
-            set { visible_segment_index = value; }
-        }
+        public int GetVisibleSegmentIndex { get; set; } = 2;
         public MapSegmentObject VisibleSegment() 
         {
-            return map_segment_arr[visible_segment_index];
+            return map_segment_arr[GetVisibleSegmentIndex];
         }
 
         public MapSegmentObject[] GetMapSegmentArr()

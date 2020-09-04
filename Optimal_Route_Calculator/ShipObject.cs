@@ -1,10 +1,6 @@
-﻿using System;
-using System.Windows.Media.Imaging;
-using System.Windows.Media;
-
-namespace Optimal_Route_Calculator
+﻿namespace Optimal_Route_Calculator
 {
-    class ShipObject : MainObject
+    class ShipObject : MainObject, IShipsandWaypoints
     {
         private double[] windConeAngles = { 0, 0, 0 };
         private double boat_to_wind = 40;
@@ -12,7 +8,7 @@ namespace Optimal_Route_Calculator
         {
 
         }
-    
+        public double GetMaxSpeed { get; set; } = 6;
         public double GetWindConeAngles(int getCode)
         {
             // getCode 1 == Get active cone angle
@@ -32,8 +28,6 @@ namespace Optimal_Route_Calculator
                     return windConeAngles[0];
                 }
             }
-
-            
         }
         public void GenerateWindConeAngles(double wind_angle)
         {
@@ -45,26 +39,7 @@ namespace Optimal_Route_Calculator
 
         public bool CanSailTowards(double waypoint_angle)
         {
-            /*
-            if (!(waypoint_angle > 90 && waypoint_angle < 180))
-            {
-                waypoint_angle = Math.Abs(waypoint_angle);
-                waypoint_angle = AngleAddition(-waypoint_angle, 360);
-            }
-            
-            
-            
-            if (waypoint_angle >= windConeAngles[0] || waypoint_angle <= windConeAngles[1])
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-            */
-
-            double angle_diff = (AngleAddition(windConeAngles[1], (boat_to_wind / 2)) - waypoint_angle + 180 + 360) % 360 - 180;
+            double angle_diff = (AngleAddition(windConeAngles[1], boat_to_wind) - waypoint_angle + 180 + 360) % 360 - 180;
             if (angle_diff <= boat_to_wind && angle_diff >= -boat_to_wind)
             {
                 return false;
@@ -74,7 +49,7 @@ namespace Optimal_Route_Calculator
                 return true;
             }
         }
-        public override void ConeSideSwap()
+        public void ConeSwapSide()
         {
             if (windConeAngles[2] == 0)
             {

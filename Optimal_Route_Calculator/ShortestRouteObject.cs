@@ -10,12 +10,12 @@ namespace Optimal_Route_Calculator
         // G_cost = Distance from starting node - following the route through parent nodes
         // H_cost = Straight distance from ending node
         // F_cost = G_cost + H_cost
-     
-        private List<List<double>> route_coords = new List<List<double>>();
-        private List<double> start_pos = new List<double>();
-        private double[] end_pos = new double[2];
-        private double step;
-        public ShortestRouteObject(double[] linePos, Canvas MyCanvas, double Step)
+
+        private List<List<double>> Route_coords = new List<List<double>>();
+        private readonly List<double> start_pos = new List<double>();
+        private readonly double[] end_pos = new double[2];
+        private readonly double step;
+        public ShortestRouteObject(double[] linePos, double Step)
         {
             start_pos.Add(linePos[0]);
             start_pos.Add(linePos[1]);
@@ -27,7 +27,7 @@ namespace Optimal_Route_Calculator
 
             step = Step;
 
-            GenerateRoute(MyCanvas);
+            GenerateRoute();
         }
 
         /// <summary>
@@ -35,28 +35,28 @@ namespace Optimal_Route_Calculator
         /// 2. Kills all the unessescary nodes
         /// 3. Repositions any remaining nodes away from land 
         /// </summary>
-        public void GenerateRoute(Canvas MyCanvas)
+        public void GenerateRoute()
         {
             // Node: 0 = X, 1 = Y, 2 = F_cost, 3 = G_cost, 4 = index of parent
             List<List<double>> closed_nodes = new List<List<double>>();
-            List<List<double>> open_nodes = new List<List<double>>();
+            List<List<double>> open_nodes = new List<List<double>>{ start_pos };
 
-            open_nodes.Add(start_pos);
             ChooseNodes(open_nodes, closed_nodes);
 
             // Follows the chain of parent indexes backwards from the last node to the start node to get the route
             int node_index = closed_nodes.Count - 1;
             while (node_index != 0)
             {
-                route_coords.Add(closed_nodes[node_index]);
+                Route_coords.Add(closed_nodes[node_index]);
                 node_index = (int)closed_nodes[node_index][4];
             }
-            route_coords.Reverse();
+            Route_coords.Reverse();
 
             // TODO: Fix this - repositions nodes in the wrong directions
             // Positions nodes further away from any land detected in range
             //CorrectNodes();
 
+            // TOOD: Make this process more efficeient
             // Kills any unessecary nodes
             KillNodes();
 
@@ -64,33 +64,32 @@ namespace Optimal_Route_Calculator
         public void KillNodes()
         {
             // Deletes All nodes with line of sight on the node before, reducing the list of nodes whilst still following the land
-            for (int i = 0; i < route_coords.Count - 1; i++)
+            for (int i = 0; i < Route_coords.Count - 1; i++)
             {
                 List<List<double>> nodes_to_kill = new List<List<double>>();
-                for (int f = i + 1; f < route_coords.Count - 1; f++)
+                for (int f = i + 1; f < Route_coords.Count - 1; f++)
                 {
-                    double[] LinePos = { route_coords[i][0], route_coords[i][1], route_coords[f][0], route_coords[f][1] };
+                    double[] LinePos = { Route_coords[i][0], Route_coords[i][1], Route_coords[f][0], Route_coords[f][1] };
                     if (!MainWindow.LineIntersectsLand(LinePos))
                     {
-                        nodes_to_kill.Add(route_coords[f]);
+                        nodes_to_kill.Add(Route_coords[f]);
                     }
                 }
 
                 foreach (List<double> node in nodes_to_kill)
                 {
-                    route_coords.Remove(node);
+                    Route_coords.Remove(node);
                 }
             }
 
-            // Attempts to smooth the course by removing the first non-user generated nodes
-            route_coords.RemoveAt(0);
+            Route_coords.RemoveAt(0);
             // route_coords.RemoveAt(route_coords.Count - 1);
         }
 
         public void CorrectNodes()
         {
             // theta(in radians) = 1 / radius
-            foreach (List<double> node in route_coords)
+            foreach (List<double> node in Route_coords)
             {
                 double radius = 5;
                 double[] centre = { node[0], node[1] };
@@ -139,7 +138,7 @@ namespace Optimal_Route_Calculator
             {
                 average_centre_line += centre_line;
             }
-            average_centre_line = average_centre_line / centreLines.Count;
+            average_centre_line /= centreLines.Count;
             double average_line_angle = average_centre_line * angleStep;
 
             //Adds [node_shift] number of pixels away from the average postion of the land
@@ -172,7 +171,7 @@ namespace Optimal_Route_Calculator
         }
         public void CheckNeighbor(double x, double y, List<double> currentNode, List<List<double>> openNodes, List<List<double>> closedNodes)
         {
-            List<double> neighbor = new List<double>() { currentNode[0] + x, currentNode[1] + y, currentNode[2], currentNode[3] + nodeDistance(x, y), closedNodes.IndexOf(currentNode) };
+            List<double> neighbor = new List<double>() { currentNode[0] + x, currentNode[1] + y, currentNode[2], currentNode[3] + NodeDistance(x, y), closedNodes.IndexOf(currentNode) };
             // If neighbor is land or is already closed then return
             if (MainWindow.PixelIsLand((int)neighbor[1], (int)neighbor[0]) || GetNode(closedNodes, neighbor) != null)
             {
@@ -199,7 +198,7 @@ namespace Optimal_Route_Calculator
                 }
             }
         }
-        public double nodeDistance(double x, double y)
+        public double NodeDistance(double x, double y)
         {
             // If its a diagonal distance = 1.4 if not then distance = 1
             if (Math.Abs(x) == Math.Abs(y))
@@ -244,12 +243,12 @@ namespace Optimal_Route_Calculator
         }
         public List<List<double>> GetRouteCoords
         {
-            get { return route_coords; }
+            get { return Route_coords; }
         }
 
         public void SetRouteCoords(List<double> coords, int index)
         {
-            route_coords[index] = coords;
+            Route_coords[index] = coords;
         }
     }
 }
