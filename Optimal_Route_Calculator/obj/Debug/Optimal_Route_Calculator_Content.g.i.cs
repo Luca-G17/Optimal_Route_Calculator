@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("fonts.xml")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("savefiles/baseloc.txt")]
 
 

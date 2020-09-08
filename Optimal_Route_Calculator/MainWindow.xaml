@@ -6,19 +6,23 @@
         xmlns:local="clr-namespace:Optimal_Route_Calculator"
         mc:Ignorable="d"
         ResizeMode="CanResize"
-        Title="MainWindow" d:DesignWidth="1242">
-    <Canvas Name="MyCanvas" Focusable="True" Background="LightGray" KeyUp="KeyIsUp" KeyDown="KeyIsDown" MouseLeftButtonUp="LeftMouseIsUp" MouseRightButtonUp="RightMouseIsUp">
-        <Button x:Name="Help" Content="HELP" Click="OnHelp" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Canvas.Top="0" Canvas.Left="1070" Background="Yellow"/>
-        <Button x:Name="Plot" Content="PLOT" Click="OnPlot" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Canvas.Top="25" Canvas.Left="1070" Background="Red"/>
-        <Button x:Name="Optimise" Content="OPTIMISE" Click="OnOptimise" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Canvas.Top="50" Canvas.Left="1070" Background="Red"/>
-        <Button x:Name="Reset" Content="RESET" Click="OnReset" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Canvas.Top="75" Canvas.Left="1070" Background="GreenYellow"/>
-        <TextBlock x:Name="StepInputTextBlock" Text="Step (Default is 5):" Margin="5, 5, 5, 5" Width="150"  Canvas.Top="130" Canvas.Left="1070" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
-        <TextBox x:Name="StepInput" Margin="5, 5, 5, 5" Width="150" Canvas.Top="145" Canvas.Left="1070"/>
-        <TextBlock x:Name="WindAngleInputTextBlock" Text="Angle to wind (Default is 40):" Margin="5, 5, 5, 5" Width="150"  Canvas.Top="175" Canvas.Left="1070" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
-        <TextBox x:Name="WindAngleInput" Margin="5, 5, 5, 5" Width="150" Canvas.Top="190" Canvas.Left="1070"/>
-        <TextBlock x:Name="MaxHullSpeedInputTextBlock" Text="Max Speed (Default is 6Kts):" Margin="5, 5, 5, 5" Width="150"  Canvas.Top="220" Canvas.Left="1070" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
-        <TextBox x:Name="MaxHullSpeedInput" Margin="5, 5, 5, 5" Width="150" Canvas.Top="235" Canvas.Left="1070"/>
-        <TextBlock x:Name="RouteInfo" Text="Route Infomation:" Margin="5, 5, 5, 5" Width="150" Canvas.Top ="400" Canvas.Left="1070" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
-
+        Title="MainWindow" d:DesignWidth="1242" x:Name="Main_Window">
+    <Canvas Name="MyCanvas" Focusable="True" Background="LightGray" x:FieldModifier="public" KeyUp="KeyIsUp" KeyDown="KeyIsDown" MouseLeftButtonUp="LeftMouseIsUp" MouseRightButtonUp="RightMouseIsUp">
+        <StackPanel x:Name="InputPanel" Canvas.Left="1070">
+            <Button x:Name="Help" Content="HELP" Click="OnHelp" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="Yellow"/>
+            <Button x:Name="Plot" Content="PLOT" Click="OnPlot" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="Red"/>
+            <Button x:Name="Optimise" Content="OPTIMISE" Click="OnOptimise" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="Red"/>
+            <Button x:Name="SaveLoad" Content="SAVE/LOAD" Click="OnSaveLoad" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="SteelBlue"/>
+            <Button x:Name="ResetButton" Content="RESET" Click="OnReset" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="GreenYellow"/>
+            <TextBlock x:Name="StepInputTextBlock" Text="Step (Default is 5):" Margin="5, 5, 5, 0" Width="150" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
+            <TextBox x:Name="StepInput" Margin="5, 0, 5, 5" Width="150" Canvas.Top="170" Canvas.Left="1070"/>
+            <TextBlock x:Name="WindAngleInputTextBlock" Text="Angle to wind (Default is 40º):" Margin="5, 5, 5, 0" Width="150" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
+            <TextBox x:Name="WindAngleInput" Margin="5, 0, 5, 5" Width="150"/>
+            <TextBlock x:Name="MaxHullSpeedInputTextBlock" Text="Max Speed (Default is 6Kts):" Margin="5, 5, 5, 0" Width="150" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
+            <TextBox x:Name="MaxHullSpeedInput" Margin="5, 0, 5, 5" Width="150"/>
+        </StackPanel>
+        <StackPanel Name="InfoPanel" Canvas.Left="1070" Canvas.Top="400">
+            <TextBlock x:Name="RouteInfo" Text="Route Infomation:" Margin="5, 5, 5, 5" Width="150" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
+        </StackPanel>
     </Canvas>
 </Window>

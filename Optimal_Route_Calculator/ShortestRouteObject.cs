@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Optimal_Route_Calculator
@@ -37,11 +38,13 @@ namespace Optimal_Route_Calculator
         /// </summary>
         public void GenerateRoute()
         {
+            MainWindow main_window = (MainWindow)Application.Current.MainWindow;
+
             // Node: 0 = X, 1 = Y, 2 = F_cost, 3 = G_cost, 4 = index of parent
             List<List<double>> closed_nodes = new List<List<double>>();
             List<List<double>> open_nodes = new List<List<double>>{ start_pos };
 
-            ChooseNodes(open_nodes, closed_nodes);
+            ChooseNodes(open_nodes, closed_nodes, main_window);
 
             // Follows the chain of parent indexes backwards from the last node to the start node to get the route
             int node_index = closed_nodes.Count - 1;
@@ -58,10 +61,10 @@ namespace Optimal_Route_Calculator
 
             // TOOD: Make this process more efficeient
             // Kills any unessecary nodes
-            KillNodes();
+            KillNodes(main_window);
 
         }
-        public void KillNodes()
+        public void KillNodes(MainWindow main_window)
         {
             // Deletes All nodes with line of sight on the node before, reducing the list of nodes whilst still following the land
             for (int i = 0; i < Route_coords.Count - 1; i++)
@@ -70,7 +73,7 @@ namespace Optimal_Route_Calculator
                 for (int f = i + 1; f < Route_coords.Count - 1; f++)
                 {
                     double[] LinePos = { Route_coords[i][0], Route_coords[i][1], Route_coords[f][0], Route_coords[f][1] };
-                    if (!MainWindow.LineIntersectsLand(LinePos))
+                    if (!main_window.LineIntersectsLand(LinePos))
                     {
                         nodes_to_kill.Add(Route_coords[f]);
                     }
@@ -86,7 +89,7 @@ namespace Optimal_Route_Calculator
             // route_coords.RemoveAt(route_coords.Count - 1);
         }
 
-        public void CorrectNodes()
+        public void CorrectNodes(MainWindow main_window)
         {
             // theta(in radians) = 1 / radius
             foreach (List<double> node in Route_coords)
@@ -104,7 +107,7 @@ namespace Optimal_Route_Calculator
                     // Y = r * Sin(theta)
                     double X_Coord = centre[0] + Math.Cos(angle) * radius;
                     double Y_coord = centre[1] + Math.Sin(angle) * radius;
-                    land_circle.Add(MainWindow.PixelIsLand((int)Y_coord, (int)X_Coord));
+                    land_circle.Add(main_window.PixelIsLand((int)Y_coord, (int)X_Coord));
                 }
 
                 // Seaches for runs of land pixels, adds the index of the centre line of each run to a list
@@ -146,7 +149,7 @@ namespace Optimal_Route_Calculator
             return adjustments;
         }
         
-        public void ChooseNodes(List<List<double>> openNodes, List<List<double>> closedNodes)
+        public void ChooseNodes(List<List<double>> openNodes, List<List<double>> closedNodes, MainWindow main_window)
         {
             while (openNodes.Count > 0)
             {
@@ -154,14 +157,14 @@ namespace Optimal_Route_Calculator
                 // If curren_node != end position then calculate the neighbors
                 if (!(current_node[0] <= end_pos[0] + step && current_node[0] >= end_pos[0] - step && current_node[1] <= end_pos[1] + step && current_node[1] >= end_pos[1] - step))
                 {
-                    CheckNeighbor(step, 0, current_node, openNodes, closedNodes);
-                    CheckNeighbor(0, step, current_node, openNodes, closedNodes);
-                    CheckNeighbor(-step, 0, current_node, openNodes, closedNodes);
-                    CheckNeighbor(0, -step, current_node, openNodes, closedNodes);
-                    CheckNeighbor(step, step, current_node, openNodes, closedNodes);
-                    CheckNeighbor(-step, step, current_node, openNodes, closedNodes);
-                    CheckNeighbor(step, -step, current_node, openNodes, closedNodes);
-                    CheckNeighbor(-step, -step, current_node, openNodes, closedNodes);
+                    CheckNeighbor(step, 0, current_node, openNodes, closedNodes, main_window);
+                    CheckNeighbor(0, step, current_node, openNodes, closedNodes, main_window);
+                    CheckNeighbor(-step, 0, current_node, openNodes, closedNodes, main_window);
+                    CheckNeighbor(0, -step, current_node, openNodes, closedNodes, main_window);
+                    CheckNeighbor(step, step, current_node, openNodes, closedNodes, main_window);
+                    CheckNeighbor(-step, step, current_node, openNodes, closedNodes, main_window);
+                    CheckNeighbor(step, -step, current_node, openNodes, closedNodes, main_window);
+                    CheckNeighbor(-step, -step, current_node, openNodes, closedNodes, main_window);
                 }
                 else
                 {
@@ -169,11 +172,12 @@ namespace Optimal_Route_Calculator
                 }
             }
         }
-        public void CheckNeighbor(double x, double y, List<double> currentNode, List<List<double>> openNodes, List<List<double>> closedNodes)
+        public void CheckNeighbor(double x, double y, List<double> currentNode, List<List<double>> openNodes, List<List<double>> closedNodes, MainWindow main_window)
         {
             List<double> neighbor = new List<double>() { currentNode[0] + x, currentNode[1] + y, currentNode[2], currentNode[3] + NodeDistance(x, y), closedNodes.IndexOf(currentNode) };
             // If neighbor is land or is already closed then return
-            if (MainWindow.PixelIsLand((int)neighbor[1], (int)neighbor[0]) || GetNode(closedNodes, neighbor) != null)
+
+            if (main_window.PixelIsLand((int)neighbor[1], (int)neighbor[0]) || GetNode(closedNodes, neighbor) != null)
             {
                 return;
             }

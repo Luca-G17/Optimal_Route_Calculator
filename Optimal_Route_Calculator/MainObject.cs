@@ -59,6 +59,12 @@ namespace Optimal_Route_Calculator
                 return angle1 + angle2;
             }
         }
+        public virtual void DrawObject(FrameworkElement MyCanvas)
+        {
+            Canvas.SetLeft(shape, getLeft);
+            Canvas.SetTop(shape, getTop);
+            ((Canvas)MyCanvas).Children.Add(shape);
+        }
 
     }
 

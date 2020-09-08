@@ -13,15 +13,23 @@ namespace Optimal_Route_Calculator
     class TextBlockObject : MainObject
     {
         private string message;
-        public TextBlockObject(int x, int y, string msg, Canvas MyCanvas, int font_size)
+        public TextBlockObject(int x, int y, string msg, FrameworkElement element, int font_size, int type_code)
         {
             shape = new TextBlock { Text = msg, FontSize = font_size, Style = (Style)Application.Current.Resources["CustomFont"], Margin = new Thickness(5, 5, 5, 5), FontWeight = FontWeights.Thin };
         
             message = msg;
-            Canvas.SetLeft(shape, x);
-            Canvas.SetTop(shape, y);
+            GetLeft = x;
+            GetTop = y;
 
-            MyCanvas.Children.Add(shape);
+            //Type_code == 0: Text block is added to a stack panel, Type_code == 1: Text block is added to a defined location on the canvas
+            if (type_code == 0)
+            {
+                DrawObject(element);
+            }
+            else
+            {
+                base.DrawObject(element);
+            }
         }
 
         public string SetMessage
@@ -32,6 +40,11 @@ namespace Optimal_Route_Calculator
         public void SetBackground(SolidColorBrush colour)
         {
             ((TextBlock)shape).Background = colour;
+        }
+
+        public override void DrawObject(FrameworkElement stack_panel)
+        {
+            ((StackPanel)stack_panel).Children.Add(shape);
         }
     }
 }

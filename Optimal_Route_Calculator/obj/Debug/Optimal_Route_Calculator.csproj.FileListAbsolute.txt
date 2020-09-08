@@ -21,3 +21,5 @@ C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\bi
 C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\bin\Debug\Newtonsoft.Json.xml
 C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\bin\Debug\System.Net.Http.Formatting.xml
 C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\Optimal_Route_Calculator.csproj.CopyComplete
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\SaveLoadWindow.g.cs
+C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\SaveLoadWindow.baml

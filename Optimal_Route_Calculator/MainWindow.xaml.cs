@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,7 +19,6 @@ namespace Optimal_Route_Calculator
     public partial class MainWindow : Window
     {
         readonly DispatcherTimer gameTimer = new DispatcherTimer();
-        static readonly FullMapObject fullMap = new FullMapObject();
         WindArrow windArrow;
         TextBlockObject waypointTimeIndicator;
         TextBlockObject windSpeedIndicator;
@@ -67,19 +67,22 @@ namespace Optimal_Route_Calculator
                 {
                     double scalar = i == 1 ? 0.0375956 : 0.0190481; // TODO: Replace this line with a better solution
                     new BitmapImage(new Uri($"pack://application:,,,/Images/Map{i}.JPG"));
-                    new MapSegmentObject(i, fullMap, scalar);
+                    new MapSegmentObject(i, GetFullMap, scalar);
                 }
                 catch (IOException)
                 {
                 }
             }
-            fullMap.SetVisiblePos(MyCanvas, -1);
+            GetFullMap.SetVisiblePos(MyCanvas, -1);
             windArrow = new WindArrow(MyCanvas);
-            windSpeedIndicator = new TextBlockObject(0, 0, "Wind Speed: 0 Kts", MyCanvas, 22);
-            routeDistanceIndicator = new TextBlockObject(1070, 425, " - Route Distance = 0Nm", MyCanvas, 12);
-            routeTimeIndicator = new TextBlockObject(1070, 450, " - Route Time = 0", MyCanvas, 12);
-            clockDisplay = new TextBlockObject(990, 0, "", MyCanvas, 22);
+            windSpeedIndicator = new TextBlockObject(0, 0, "Wind Speed: 0 Kts", MyCanvas, 22, 1);
+            routeDistanceIndicator = new TextBlockObject(1070, 425, " - Route Distance = 0Nm", InfoPanel, 12, 0);
+            routeTimeIndicator = new TextBlockObject(1070, 450, " - Route Time = 0", InfoPanel, 12, 0);
+            clockDisplay = new TextBlockObject(990, 0, "", MyCanvas, 22, 1);
+            
         }
+
+        internal FullMapObject GetFullMap { get; } = new FullMapObject();
         private void UpdateClock()
         {
             string time = DateTime.Now.ToString("T");
@@ -123,7 +126,7 @@ namespace Optimal_Route_Calculator
         private int MouseOverWaypoint()
         {
             Point point = Mouse.GetPosition(MyCanvas);
-            MapSegmentObject segment = fullMap.VisibleSegment();
+            MapSegmentObject segment = GetFullMap.VisibleSegment();
             for (int i = 0; i < segment.GetWaypointsAndLines().Count; i += 2)
             {
                 MainObject waypoint = segment.GetWaypointsAndLines()[i];
@@ -139,21 +142,21 @@ namespace Optimal_Route_Calculator
             double route_line_length = 0;
             for (int i = final_index; i > 0; i -= 2)
             {
-                route_line_length += ((LineObject)fullMap.VisibleSegment().GetWaypointsAndLines()[i]).RouteLineLength();
+                route_line_length += ((LineObject)GetFullMap.VisibleSegment().GetWaypointsAndLines()[i]).RouteLineLength();
             }
             // Converts from DIPs to Nm
-            route_line_length *= fullMap.VisibleSegment().GetScalar;
+            route_line_length *= GetFullMap.VisibleSegment().GetScalar;
             return route_line_length;
         }
         private void DisplayWaypointData(int index)
         {
             // Display the time when you should reach this waypoint
-            MainObject waypoint = fullMap.VisibleSegment().GetWaypointsAndLines()[index];
+            MainObject waypoint = GetFullMap.VisibleSegment().GetWaypointsAndLines()[index];
             double route_time_mins = 60 * TotalRouteLineLength(index - 1) / max_speed;
 
             DateTime waypoint_arrival_time = plot_time.AddMinutes(route_time_mins);
             string arrival_time_str = waypoint_arrival_time.ToString("t");
-            waypointTimeIndicator = new TextBlockObject((int)waypoint.GetLeft - 10, (int)waypoint.GetTop - 10, $"Arrival Time = {arrival_time_str}", MyCanvas, 12);
+            waypointTimeIndicator = new TextBlockObject((int)waypoint.GetLeft - 10, (int)waypoint.GetTop - 10, $"Arrival Time = {arrival_time_str}", MyCanvas, 12, 1);
             waypointTimeIndicator.SetBackground(Brushes.White);
         }
         private bool NumValidate(string inp)
@@ -186,7 +189,7 @@ namespace Optimal_Route_Calculator
                 double new_angle = Convert.ToDouble(input);        
                 if (new_angle < 45 && new_angle >= 0)
                 {
-                    fullMap.VisibleSegment().GetShip.GetBoatToWind = wind_angle;
+                    GetFullMap.VisibleSegment().GetShip.GetBoatToWind = wind_angle;
                     wind_angle = new_angle;
                 }
             }
@@ -203,11 +206,11 @@ namespace Optimal_Route_Calculator
         {
             if (e.Key == Key.D)
             {
-                fullMap.SetVisiblePos(MyCanvas, 1);
+                GetFullMap.SetVisiblePos(MyCanvas, 1);
             }
             if (e.Key == Key.A)
             {
-                fullMap.SetVisiblePos(MyCanvas, -1);
+                GetFullMap.SetVisiblePos(MyCanvas, -1);
             }
             if (e.Key == Key.F)
             {
@@ -227,7 +230,7 @@ namespace Optimal_Route_Calculator
         private void OnPlot(object sender, RoutedEventArgs e)
         {
             plot_time = DateTime.Now;
-            MapSegmentObject visible_segment = fullMap.VisibleSegment();
+            MapSegmentObject visible_segment = GetFullMap.VisibleSegment();
             if (visible_segment.GetWaypointsAndLines().Count >= 3)
             {
                 // Removes existing route lines
@@ -238,7 +241,7 @@ namespace Optimal_Route_Calculator
         }
         private void OnOptimise(object sender, RoutedEventArgs e)
         {
-            MapSegmentObject segment = fullMap.VisibleSegment();
+            MapSegmentObject segment = GetFullMap.VisibleSegment();
             // Fix this to allow for more than 2 user placed waypoints
             if (segment.GetWaypointsAndLines().Count <= 3 && segment.GetWaypointsAndLines().Count > 0)
             {
@@ -256,7 +259,11 @@ namespace Optimal_Route_Calculator
         }
         private void OnReset(object sender, RoutedEventArgs e)
         {
-            foreach (MapSegmentObject segment in fullMap.GetMapSegmentArr())
+            Reset();
+        }
+        public void Reset()
+        {
+            foreach (MapSegmentObject segment in GetFullMap.GetMapSegmentArr())
             {
                 if (segment != null)
                 {
@@ -281,15 +288,20 @@ namespace Optimal_Route_Calculator
         private void RightMouseIsUp(object sender, MouseButtonEventArgs e)
         {
             Point point = e.GetPosition(MyCanvas);
-            for (int i = 0; i < fullMap.VisibleSegment().GetWaypointsAndLines().Count(); i += 2)
+            for (int i = 0; i < GetFullMap.VisibleSegment().GetWaypointsAndLines().Count(); i += 2)
             {
-                MainObject waypoint = fullMap.VisibleSegment().GetWaypointsAndLines()[i];
+                MainObject waypoint = GetFullMap.VisibleSegment().GetWaypointsAndLines()[i];
                 if (Hypotenuse(waypoint.GetLeft + WAYPOINT_RADIUS - point.X, waypoint.GetTop + WAYPOINT_RADIUS - point.Y) <= WAYPOINT_RADIUS)
                 {
                     RemoveWaypoint(i);
                 }
             }
 
+        }
+        private void OnSaveLoad(object sender, RoutedEventArgs e)
+        {
+            SaveLoadWindow saveLoad = new SaveLoadWindow();
+            saveLoad.Show();
         }
         #endregion
 
@@ -358,7 +370,7 @@ namespace Optimal_Route_Calculator
                 {
                     // Finds a potential end point of the next route line - this is where the edge of the wind cone intersects the edge of the tacking cone
                     nextLoc = CalcLineIntersection(tack_cone[(int)tack_cone[2]], active_wind_cone, shipPos, waypointPos);
-                    if (Hypotenuse(nextLoc[0] - shipPos[0], nextLoc[1] - shipPos[1]) < 30) // TODO: Change this to a time not distance
+                    if (Hypotenuse(nextLoc[0] - shipPos[0], nextLoc[1] - shipPos[1]) * visible_segment.GetScalar / max_speed < 0.1666) // if route line is less than 10 mins 
                     {
                         // Finds a potential end point of the next route line - this is where the edge of the wind cone intersects the other edge of the wind cone
                         nextLoc = CalcLineIntersection(inactive_wind_cone, active_wind_cone, shipPos, waypointPos);
@@ -404,7 +416,7 @@ namespace Optimal_Route_Calculator
         private void PlaceRouteLine(double[] line_pos, int waypoint_line_index)
         {
             // adds a new Route Line between the ship and the next location, new line is stored in a List, the list of route lines is a property of each waypoint line
-            ((LineObject)fullMap.VisibleSegment().GetWaypointsAndLines()[waypoint_line_index]).AddRouteLine(new LineObject(MyCanvas, line_pos, Brushes.Red));
+            ((LineObject)GetFullMap.VisibleSegment().GetWaypointsAndLines()[waypoint_line_index]).AddRouteLine(new LineObject(MyCanvas, line_pos, Brushes.Red));
         }
         #endregion
 
@@ -412,7 +424,7 @@ namespace Optimal_Route_Calculator
         public void RemoveWaypoint(int index)
         {
             //Find a better way of doing this 
-            MapSegmentObject segment = fullMap.VisibleSegment();
+            MapSegmentObject segment = GetFullMap.VisibleSegment();
             segment.DelWaypointOrLine(index, MyCanvas);
 
             int Count = segment.GetWaypointsAndLines().Count();
@@ -455,25 +467,25 @@ namespace Optimal_Route_Calculator
             if (PixelIsLand((int)Math.Round(coords[1]), (int)Math.Round(coords[0])) == false)
             {
                 Waypoint new_waypoint = new Waypoint(MyCanvas, coords[0] - WAYPOINT_RADIUS, coords[1] - WAYPOINT_RADIUS);
-                List<MainObject> waypoints = fullMap.VisibleSegment().GetWaypointsAndLines();
+                List<MainObject> waypoints = GetFullMap.VisibleSegment().GetWaypointsAndLines();
                 if (waypoints.Count > 0)
                 {
                     MainObject old_waypoint = waypoints[waypoints.Count - 1];
-                    PlaceWaypointLine(fullMap.VisibleSegment().GetWaypointsAndLines().Count(), old_waypoint, new_waypoint);
+                    PlaceWaypointLine(GetFullMap.VisibleSegment().GetWaypointsAndLines().Count(), old_waypoint, new_waypoint);
                 }
-                fullMap.VisibleSegment().AddWaypointOrLine(fullMap.VisibleSegment().GetWaypointsAndLines().Count(), new_waypoint);
+                GetFullMap.VisibleSegment().AddWaypointOrLine(GetFullMap.VisibleSegment().GetWaypointsAndLines().Count(), new_waypoint);
             }
         }
         private void PlaceWaypointLine(int index, MainObject object1, MainObject object2)
         {
             double[] LinePos = { object1.GetLeft + WAYPOINT_RADIUS, object1.GetTop + WAYPOINT_RADIUS, object2.GetLeft + WAYPOINT_RADIUS, object2.GetTop + WAYPOINT_RADIUS };
 
-            fullMap.VisibleSegment().AddWaypointOrLine(index, new LineObject(MyCanvas, LinePos, Brushes.Black));
+            GetFullMap.VisibleSegment().AddWaypointOrLine(index, new LineObject(MyCanvas, LinePos, Brushes.Black));
         }
         #endregion
 
         #region LandDetection
-        public static bool LineIntersectsLand(double[] line_pos)
+        public bool LineIntersectsLand(double[] line_pos)
         {
             double[] lineData = WhereLineIntersectsLand(line_pos);
             if (lineData[2] > 10)
@@ -513,7 +525,7 @@ namespace Optimal_Route_Calculator
 
             return new double[] { step, grad_to_node, Y_intercept };
         }
-        public static double[] WhereLineIntersectsLand(double[] line_pos)
+        public double[] WhereLineIntersectsLand(double[] line_pos)
         {
             // 0 = Step, 1 = Gradient to node, 2 = Y-intercept
             double[] stepData = CalculateStep(line_pos);
@@ -546,9 +558,9 @@ namespace Optimal_Route_Calculator
             land_data[2] = LandPixelCount;
             return land_data;
         }
-        public static bool PixelIsLand(int pixel_row, int pixel_col)
+        public bool PixelIsLand(int pixel_row, int pixel_col)
         {
-            MapSegmentObject Segment = fullMap.VisibleSegment();
+            MapSegmentObject Segment = GetFullMap.VisibleSegment();
             double[] segment_dimentions = { Segment.GetHeight, Segment.GetWidth };
             Color colour = GetPixelColor(Segment.GetRectangle, pixel_row, pixel_col, segment_dimentions);
             if ((colour.R <= 225 && colour.R >= 185 && colour.G <= 180 && colour.G >= 145 && colour.B <= 255 && colour.B >= 235))
@@ -560,7 +572,7 @@ namespace Optimal_Route_Calculator
                 return true;
             }
         }
-        public static Color GetPixelColor(Visual visual, int row, int col, double[] segmentDimentions)
+        public Color GetPixelColor(Visual visual, int row, int col, double[] segmentDimentions)
         {
             GC.WaitForPendingFinalizers();
 
@@ -594,6 +606,8 @@ namespace Optimal_Route_Calculator
             return Dpi;
         }
         #endregion
+
+
     }
 }
 
