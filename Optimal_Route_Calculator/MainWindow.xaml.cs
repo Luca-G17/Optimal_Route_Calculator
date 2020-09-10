@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -25,7 +24,7 @@ namespace Optimal_Route_Calculator
         TextBlockObject routeDistanceIndicator;
         TextBlockObject routeTimeIndicator;
         TextBlockObject clockDisplay;
-        
+
 
         private const double WAYPOINT_RADIUS = 25;
 
@@ -79,7 +78,7 @@ namespace Optimal_Route_Calculator
             routeDistanceIndicator = new TextBlockObject(1070, 425, " - Route Distance = 0Nm", InfoPanel, 12, 0);
             routeTimeIndicator = new TextBlockObject(1070, 450, " - Route Time = 0", InfoPanel, 12, 0);
             clockDisplay = new TextBlockObject(990, 0, "", MyCanvas, 22, 1);
-            
+
         }
 
         internal FullMapObject GetFullMap { get; } = new FullMapObject();
@@ -186,7 +185,7 @@ namespace Optimal_Route_Calculator
             string input = WindAngleInput.Text;
             if (NumValidate(input))
             {
-                double new_angle = Convert.ToDouble(input);        
+                double new_angle = Convert.ToDouble(input);
                 if (new_angle < 45 && new_angle >= 0)
                 {
                     GetFullMap.VisibleSegment().GetShip.GetBoatToWind = wind_angle;
@@ -235,7 +234,7 @@ namespace Optimal_Route_Calculator
             {
                 // Removes existing route lines
                 visible_segment.DelRouteLines(MyCanvas);
-                
+
                 GenerateRoute(visible_segment);
             }
         }
@@ -488,6 +487,7 @@ namespace Optimal_Route_Calculator
         public bool LineIntersectsLand(double[] line_pos)
         {
             double[] lineData = WhereLineIntersectsLand(line_pos);
+            // Defines how many pixels of "land" can be between two nodes before they can't see eachother
             if (lineData[2] > 10)
             {
                 return true;
@@ -532,7 +532,7 @@ namespace Optimal_Route_Calculator
 
             int LandPixelCount = 0;
             double Y;
-            double[] land_data = new double[3];
+            double[] land_data = { line_pos[2], line_pos[3], 0 };
             for (double X = line_pos[0]; X > line_pos[2] + 1 || X < line_pos[2] - 1; X += stepData[0])
             {
                 // Y = mX + c
@@ -540,20 +540,20 @@ namespace Optimal_Route_Calculator
                 if (PixelIsLand((int)Y, (int)X))
                 {
                     LandPixelCount++;
-                    // Defines how many pixels of "land" can be between two nodes before they can't see eachother
                     if (LandPixelCount == 1)
                     {
                         // Returns the position of the first point where the line intersects the land
                         land_data[0] = X;
                         land_data[1] = Y;
                     }
+                    else if (LandPixelCount > 10)
+                    {
+                        //Remove this later
+                        land_data[2] = LandPixelCount;
+                        return land_data;
+                    }
                 }
 
-            }
-            if (land_data[0] == 0 && land_data[1] == 0)
-            {
-                land_data[0] = line_pos[2];
-                land_data[1] = line_pos[3];
             }
             land_data[2] = LandPixelCount;
             return land_data;
@@ -572,6 +572,7 @@ namespace Optimal_Route_Calculator
                 return true;
             }
         }
+        // TODO: Generate a 2D array with the colour of the pixels, so this slow method only has to be called at the start
         public Color GetPixelColor(Visual visual, int row, int col, double[] segmentDimentions)
         {
             GC.WaitForPendingFinalizers();

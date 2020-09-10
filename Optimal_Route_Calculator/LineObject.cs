@@ -8,7 +8,7 @@ namespace Optimal_Route_Calculator
     class LineObject : MainObject
     {
         private double[] line_pos = new double[4];
-        private double length { get; } 
+        private double length { get; }
         private List<LineObject> routeLines = new List<LineObject>();
         public LineObject(Canvas MyCanvas, double[] LinePos, SolidColorBrush colour)
         {
@@ -26,11 +26,11 @@ namespace Optimal_Route_Calculator
 
             MyCanvas.Children.Add(shape);
         }
-        
+
         public double RouteLineLength()
         {
             double total = 0;
-            foreach(LineObject line in routeLines)
+            foreach (LineObject line in routeLines)
             {
                 total += line.length;
             }

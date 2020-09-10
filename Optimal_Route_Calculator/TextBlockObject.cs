@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -16,12 +10,13 @@ namespace Optimal_Route_Calculator
         public TextBlockObject(int x, int y, string msg, FrameworkElement element, int font_size, int type_code)
         {
             shape = new TextBlock { Text = msg, FontSize = font_size, Style = (Style)Application.Current.Resources["CustomFont"], Margin = new Thickness(5, 5, 5, 5), FontWeight = FontWeights.Thin };
-        
+
             message = msg;
             GetLeft = x;
             GetTop = y;
 
-            //Type_code == 0: Text block is added to a stack panel, Type_code == 1: Text block is added to a defined location on the canvas
+            // TODO: Find a way to detect weather the element is the stack panel or the canvas
+            // Type_code == 0: Text block is added to a stack panel, Type_code == 1: Text block is added to a defined location on the canvas
             if (type_code == 0)
             {
                 DrawObject(element);

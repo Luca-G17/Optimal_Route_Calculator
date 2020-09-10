@@ -27,14 +27,14 @@ namespace Optimal_Route_Calculator
         }
 
         public int GetVisibleSegmentIndex { get; set; } = 2;
-        public MapSegmentObject VisibleSegment() 
+        public MapSegmentObject VisibleSegment()
         {
             return map_segment_arr[GetVisibleSegmentIndex];
         }
 
         public MapSegmentObject[] GetMapSegmentArr()
         {
-            return map_segment_arr; 
+            return map_segment_arr;
         }
         public void SetMapSegmentArr(int index, MapSegmentObject mapSegment)
         {

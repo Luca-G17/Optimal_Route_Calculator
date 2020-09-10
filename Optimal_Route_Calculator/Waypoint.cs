@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Controls;
-using System.Windows.Shapes;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 
 namespace Optimal_Route_Calculator
@@ -13,7 +13,7 @@ namespace Optimal_Route_Calculator
 
         public Waypoint(Canvas MyCanvas, double SetLeft, double SetTop)
         {
-            shape = new Ellipse { Width = Width, Height = Height, Stroke = Brushes.Red, Fill = Brushes.Transparent};
+            shape = new Ellipse { Width = Width, Height = Height, Stroke = Brushes.Red, Fill = Brushes.Transparent };
 
             getLeft = SetLeft;
             getTop = SetTop;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 
@@ -15,23 +14,29 @@ namespace Optimal_Route_Calculator
             InitializeComponent();
         }
 
-        
+
         private string PathToAppDirectory(string localPath)
         {
             string currentDir = Environment.CurrentDirectory;
             DirectoryInfo directory = new DirectoryInfo(Path.GetFullPath(Path.Combine(currentDir, @"..\..\" + localPath)));
-            return directory.ToString();
+            if (!(currentDir = directory.ToString()).EndsWith(".txt"))
+            {
+                return currentDir += ".txt";
+            }
+            return currentDir;
+
         }
         private void OnLoad(object sender, RoutedEventArgs e)
         {
             string path = "SaveFiles\\" + FileNameTextBox.Text;
             // TODO: This is yucky remove when you figure out how to do it better
-           
+
             path = PathToAppDirectory(path);
             if (File.Exists(path))
             {
                 MainWindow main_window = (MainWindow)Application.Current.MainWindow;
                 main_window.Reset();
+
                 using (StreamReader file = new StreamReader(path))
                 {
                     int line_num = 0;
@@ -41,7 +46,7 @@ namespace Optimal_Route_Calculator
                         line_num++;
                         // Splits the line into a (x, y) position of the waypoint
                         int comma_index = line.IndexOf(',');
-                        double[] coords = { Convert.ToDouble(line.Substring(0, comma_index)), Convert.ToDouble(line.Substring(comma_index + 1, line.Length - comma_index - 1)) };
+                        double[] coords = { Convert.ToDouble(line.Substring(0, comma_index)) + 25, Convert.ToDouble(line.Substring(comma_index + 1, line.Length - comma_index - 1)) + 25 };
                         main_window.PlaceWaypoint(coords);
                     }
                 }
@@ -60,10 +65,6 @@ namespace Optimal_Route_Calculator
 
             if (!File.Exists(path))
             {
-                if (!path.EndsWith(".txt"))
-                {
-                    path += ".txt";
-                }
                 using (StreamWriter file = new StreamWriter(path))
                 {
                     for (int i = 0; i < main_window.GetFullMap.VisibleSegment().GetWaypointsAndLines().Count; i += 2)

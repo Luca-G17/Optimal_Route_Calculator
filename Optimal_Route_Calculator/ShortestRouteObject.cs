@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace Optimal_Route_Calculator
 {
@@ -42,7 +41,7 @@ namespace Optimal_Route_Calculator
 
             // Node: 0 = X, 1 = Y, 2 = F_cost, 3 = G_cost, 4 = index of parent
             List<List<double>> closed_nodes = new List<List<double>>();
-            List<List<double>> open_nodes = new List<List<double>>{ start_pos };
+            List<List<double>> open_nodes = new List<List<double>> { start_pos };
 
             ChooseNodes(open_nodes, closed_nodes, main_window);
 
@@ -126,7 +125,7 @@ namespace Optimal_Route_Calculator
                     }
                 }
                 if (centre_lines.Count > 0)
-                { 
+                {
                     double[] nodeAdjustements = MoveNode(centre_lines, angle_step);
                     node[0] += nodeAdjustements[0];
                     node[1] += nodeAdjustements[1];
@@ -148,7 +147,7 @@ namespace Optimal_Route_Calculator
             double[] adjustments = { Math.Cos(average_line_angle) * -node_shift, Math.Sin(average_line_angle) * -node_shift };
             return adjustments;
         }
-        
+
         public void ChooseNodes(List<List<double>> openNodes, List<List<double>> closedNodes, MainWindow main_window)
         {
             while (openNodes.Count > 0)
