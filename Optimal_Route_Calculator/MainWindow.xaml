@@ -11,7 +11,7 @@
         <StackPanel x:Name="InputPanel" Canvas.Left="1070">
             <Button x:Name="Help" Content="HELP" Click="OnHelp" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="Yellow"/>
             <Button x:Name="Plot" Content="PLOT" Click="OnPlot" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="Red"/>
-            <Button x:Name="Optimise" Content="OPTIMISE" Click="OnOptimise" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="Red"/>
+            <Button x:Name="OptimiseButton" Content="OPTIMISE" Click="OnOptimise" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="Red"/>
             <Button x:Name="SaveLoad" Content="SAVE/LOAD" Click="OnSaveLoad" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="SteelBlue"/>
             <Button x:Name="ResetButton" Content="RESET" Click="OnReset" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="GreenYellow"/>
             <TextBlock x:Name="StepInputTextBlock" Text="Step (Default is 5):" Margin="5, 5, 5, 0" Width="150" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
@@ -24,5 +24,8 @@
         <StackPanel Name="InfoPanel" Canvas.Left="1070" Canvas.Top="400">
             <TextBlock x:Name="RouteInfo" Text="Route Infomation:" Margin="5, 5, 5, 5" Width="150" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
         </StackPanel>
+        <Rectangle x:Name="LoadingRectangle" Fill="#3F3F41" Width="1250" Height="620"/>
+        <Image x:Name="LoadingCompass" Source="Images/Loading Compass.jpg" Width="400" Height="400" Canvas.Left="410"/>
+        <TextBlock x:Name="LoadingText" Text="LOADING" FontSize="60" Foreground="White" Canvas.Left="495" Canvas.Top="400" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
     </Canvas>
 </Window>

@@ -15,9 +15,12 @@ namespace Optimal_Route_Calculator
         private readonly ImageBrush Skin = new ImageBrush();
         private readonly BitmapImage bitmapImage;
 
+        private bool[,] LandPixelMap;
         private readonly List<MainObject> waypointsLines = new List<MainObject>(); // Waypoint -- Line -- Waypoint -- Line -- Waypoint
 
         private readonly string uri;
+
+        private int node_seperation = 5;
 
         public MapSegmentObject(int index, FullMapObject fullMap, double distanceScalar)
         {
@@ -39,6 +42,24 @@ namespace Optimal_Route_Calculator
 
             fullMap.SetMapSegmentArr(index, this);
         }
+        public bool[,] GetLandPixelMap
+        {
+            get { return LandPixelMap; }
+        }
+        public void GenerateLandMap(MainWindow main_window)
+        {
+
+            double[] segment_dimentions = { GetHeight, GetWidth };
+            bool[,] land_map = new bool[(int)segment_dimentions[0] / node_seperation + 1, (int)segment_dimentions[1] / node_seperation + 1];
+            for (int i = 0; i < segment_dimentions[0] / node_seperation; i++)
+            {
+                for (int f = 0; f < segment_dimentions[1] / node_seperation; f++)
+                {
+                    land_map[i, f] = main_window.PixelIsLandFromVisual(i * node_seperation, f * node_seperation);
+                }
+            }
+            LandPixelMap = land_map;
+        }
         public List<MainObject> GetWaypointsAndLines()
         {
             return waypointsLines;
@@ -49,6 +70,10 @@ namespace Optimal_Route_Calculator
         }
         public void DelWaypointOrLine(int index, Canvas MyCanvas)
         {
+            if (index % 2 != 0)
+            {
+                ((LineObject)waypointsLines[index]).ChangeRouteLineVisibility(MyCanvas);
+            }
             waypointsLines[index].SetVisible(false, MyCanvas);
             waypointsLines.RemoveAt(index);
         }

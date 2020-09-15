@@ -8,7 +8,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-
+using System.ComponentModel;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Optimal_Route_Calculator
 {
@@ -17,14 +19,13 @@ namespace Optimal_Route_Calculator
     /// </summary>
     public partial class MainWindow : Window
     {
-        readonly DispatcherTimer gameTimer = new DispatcherTimer();
+        readonly DispatcherTimer mainTimer = new DispatcherTimer();
         WindArrow windArrow;
         TextBlockObject waypointTimeIndicator;
         TextBlockObject windSpeedIndicator;
         TextBlockObject routeDistanceIndicator;
         TextBlockObject routeTimeIndicator;
         TextBlockObject clockDisplay;
-
 
         private const double WAYPOINT_RADIUS = 25;
 
@@ -35,16 +36,23 @@ namespace Optimal_Route_Calculator
         private double node_seperation = 5;
         private double wind_angle = 40;
         private double max_speed = 6;
+        private Point DPI;
+        private bool first_run = true;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            // Initialises API
             APIManager.InitialiseClient();
+
             WindAPICall();
             GenerateMap();
-            gameTimer.Tick += MainLoop;
-            gameTimer.Interval = TimeSpan.FromMilliseconds(20);
-            gameTimer.Start();
+
+            // Attaches Main loop as an event handler to the Timer
+            mainTimer.Tick += MainLoop;
+            mainTimer.Interval = TimeSpan.FromMilliseconds(20);
+            mainTimer.Start();
             MyCanvas.Focus();
 
             Height = HEIGHT;
@@ -72,6 +80,7 @@ namespace Optimal_Route_Calculator
                 {
                 }
             }
+
             GetFullMap.SetVisiblePos(MyCanvas, -1);
             windArrow = new WindArrow(MyCanvas);
             windSpeedIndicator = new TextBlockObject(0, 0, "Wind Speed: 0 Kts", MyCanvas, 22, 1);
@@ -89,6 +98,23 @@ namespace Optimal_Route_Calculator
         }
         private void MainLoop(object sender, EventArgs e)
         {
+           
+            if (first_run)
+            {
+                // Add anything here that can't be run in the constructor but has to be run on launch
+                first_run = !first_run;
+                DPI = GetScreenDPI(MyCanvas);
+                foreach (MapSegmentObject segment in GetFullMap.GetMapSegmentArr())
+                {
+                    if (segment != null)
+                    {
+                        segment.GenerateLandMap(this);
+                    }
+                }
+                LoadingCompass.Visibility = Visibility.Collapsed;
+                LoadingRectangle.Visibility = Visibility.Collapsed;
+                LoadingText.Visibility = Visibility.Collapsed;
+            }
             if (TextInputCheck(StepInput, node_seperation))
             {
                 StepChanged();
@@ -109,7 +135,7 @@ namespace Optimal_Route_Calculator
                     waypointTimeIndicator = null;
                 }
             }
-            UpdateClock();
+            UpdateClock(); 
 
         }
 
@@ -238,23 +264,9 @@ namespace Optimal_Route_Calculator
                 GenerateRoute(visible_segment);
             }
         }
-        private void OnOptimise(object sender, RoutedEventArgs e)
+        private async void OnOptimise(object sender, RoutedEventArgs e)
         {
-            MapSegmentObject segment = GetFullMap.VisibleSegment();
-            // Fix this to allow for more than 2 user placed waypoints
-            if (segment.GetWaypointsAndLines().Count <= 3 && segment.GetWaypointsAndLines().Count > 0)
-            {
-                LineObject line = (LineObject)segment.GetWaypointsAndLines()[1];
-                ShortestRouteObject short_route = new ShortestRouteObject(line.LinePos, node_seperation);
-                RemoveWaypoint(2);
-
-                for (int f = 0; f <= short_route.GetRouteCoords.Count - 1; f++)
-                {
-                    List<double> node = short_route.GetRouteCoords[f];
-                    double[] coords = { node[0], node[1] };
-                    PlaceWaypoint(coords);
-                }
-            }
+            await OptimiseStart(this);               
         }
         private void OnReset(object sender, RoutedEventArgs e)
         {
@@ -281,8 +293,12 @@ namespace Optimal_Route_Calculator
         }
         private void LeftMouseIsUp(object sender, MouseButtonEventArgs e)
         {
+            
             double[] coords = { e.GetPosition(MyCanvas).X, e.GetPosition(MyCanvas).Y };
-            PlaceWaypoint(coords);
+            if (coords[0] < 1070 && coords[1] < HEIGHT)
+            {
+                PlaceWaypoint(coords);
+            }
         }
         private void RightMouseIsUp(object sender, MouseButtonEventArgs e)
         {
@@ -295,7 +311,6 @@ namespace Optimal_Route_Calculator
                     RemoveWaypoint(i);
                 }
             }
-
         }
         private void OnSaveLoad(object sender, RoutedEventArgs e)
         {
@@ -481,6 +496,36 @@ namespace Optimal_Route_Calculator
 
             GetFullMap.VisibleSegment().AddWaypointOrLine(index, new LineObject(MyCanvas, LinePos, Brushes.Black));
         }
+
+        private async Task OptimiseStart(MainWindow mainWindow)
+        {
+            // Generating the route on a seperate thread so the program doesnt freeze up
+            ShortestRouteObject shortestRoute = await Task.Run(() => Optimise(mainWindow));
+
+            // The new waypoints have to be placed on the main thread because the UI can only be accessed on one thread
+            PlaceNewWaypoints(shortestRoute, mainWindow);
+        }
+        private ShortestRouteObject Optimise(MainWindow main_window)
+        {
+            MapSegmentObject segment = main_window.GetFullMap.VisibleSegment();
+
+            // TODO: Fix this to allow for more than 2 user placed waypoints
+            if (segment.GetWaypointsAndLines().Count <= 3 && segment.GetWaypointsAndLines().Count > 0)
+            {
+                LineObject line = (LineObject)segment.GetWaypointsAndLines()[1];
+                ShortestRouteObject short_route = new ShortestRouteObject(line.LinePos, main_window.node_seperation, main_window);
+                return short_route;
+            }
+            return null;
+        }
+        private static void PlaceNewWaypoints(ShortestRouteObject shortRoute, MainWindow main_window)
+        {
+            main_window.RemoveWaypoint(2);
+            foreach (List<double> node in shortRoute.GetRouteCoords)
+            {
+                main_window.PlaceWaypoint(new double[] { node[0], node[1] });
+            }
+        }
         #endregion
 
         #region LandDetection
@@ -558,7 +603,28 @@ namespace Optimal_Route_Calculator
             land_data[2] = LandPixelCount;
             return land_data;
         }
-        public bool PixelIsLand(int pixel_row, int pixel_col)
+        public bool PixelIsLand(int row, int col)
+        {
+            bool[,] land_pixel_map = GetFullMap.VisibleSegment().GetLandPixelMap;
+            row /= (int)node_seperation;
+            col /= (int)node_seperation; 
+            if (row > land_pixel_map.GetLength(0) - 5 || col > land_pixel_map.GetLength(1) - 5 || row < 0  + 5 || col < 0 + 5)
+            {
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    return land_pixel_map[row, col];
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    throw new Exception($"Land Detection out of range, coords: ({col * node_seperation}, {row * node_seperation})");
+                }
+             }
+        }
+        public bool PixelIsLandFromVisual(int pixel_row, int pixel_col)
         {
             MapSegmentObject Segment = GetFullMap.VisibleSegment();
             double[] segment_dimentions = { Segment.GetHeight, Segment.GetWidth };
@@ -572,19 +638,17 @@ namespace Optimal_Route_Calculator
                 return true;
             }
         }
-        // TODO: Generate a 2D array with the colour of the pixels, so this slow method only has to be called at the start
+
         public Color GetPixelColor(Visual visual, int row, int col, double[] segmentDimentions)
         {
             GC.WaitForPendingFinalizers();
 
-            Point Dpi = GetScreenDPI(visual);
-
             // Viewbox uses values between 0 & 1 so normalize the Rect with respect to the canvas's Height & Width
             Rect percentSrceenRec = new Rect(col / segmentDimentions[1], row / segmentDimentions[0],
                                           1 / segmentDimentions[1], 1 / segmentDimentions[0]);
-            var bmpOut = new RenderTargetBitmap((int)(Dpi.X / 96.0),
-                                                (int)(Dpi.Y / 96.0),
-                                                Dpi.X, Dpi.Y, PixelFormats.Default); // generalized for monitors with different dpi
+            var bmpOut = new RenderTargetBitmap((int)(DPI.X / 96.0),
+                                                (int)(DPI.Y / 96.0),
+                                                DPI.X, DPI.Y, PixelFormats.Default); // generalized for monitors with different dpi
 
             DrawingVisual drawingVisual = new DrawingVisual();
             using (DrawingContext dc = drawingVisual.RenderOpen())
@@ -606,9 +670,8 @@ namespace Optimal_Route_Calculator
             Dpi = new Point(96.0 * source.CompositionTarget.TransformToDevice.M11, 96.0 * source.CompositionTarget.TransformToDevice.M22);
             return Dpi;
         }
+
         #endregion
-
-
     }
 }
 

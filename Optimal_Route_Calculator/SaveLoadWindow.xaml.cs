@@ -12,14 +12,20 @@ namespace Optimal_Route_Calculator
         public SaveLoadWindow()
         {
             InitializeComponent();
+            string directoryPath = PathToAppDirectory("SaveFiles", 1);
+            string[] existingSaveFiles = Directory.GetFiles(directoryPath);
+            foreach (string SaveFile in existingSaveFiles)
+            {
+                ExistingFiles.Text += "\n" + Path.GetFileName(SaveFile);
+            }
         }
 
 
-        private string PathToAppDirectory(string localPath)
+        private string PathToAppDirectory(string localPath, int fileCode)
         {
             string currentDir = Environment.CurrentDirectory;
             DirectoryInfo directory = new DirectoryInfo(Path.GetFullPath(Path.Combine(currentDir, @"..\..\" + localPath)));
-            if (!(currentDir = directory.ToString()).EndsWith(".txt"))
+            if (!(currentDir = directory.ToString()).EndsWith(".txt") && fileCode == 0)
             {
                 return currentDir += ".txt";
             }
@@ -31,7 +37,7 @@ namespace Optimal_Route_Calculator
             string path = "SaveFiles\\" + FileNameTextBox.Text;
             // TODO: This is yucky remove when you figure out how to do it better
 
-            path = PathToAppDirectory(path);
+            path = PathToAppDirectory(path, 0);
             if (File.Exists(path))
             {
                 MainWindow main_window = (MainWindow)Application.Current.MainWindow;
@@ -61,7 +67,7 @@ namespace Optimal_Route_Calculator
         {
             MainWindow main_window = (MainWindow)Application.Current.MainWindow;
             string path = "SaveFiles\\" + FileNameTextBox.Text;
-            path = PathToAppDirectory(path);
+            path = PathToAppDirectory(path, 0);
 
             if (!File.Exists(path))
             {

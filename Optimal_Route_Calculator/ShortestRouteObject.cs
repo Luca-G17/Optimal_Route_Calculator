@@ -15,7 +15,7 @@ namespace Optimal_Route_Calculator
         private readonly List<double> start_pos = new List<double>();
         private readonly double[] end_pos = new double[2];
         private readonly double step;
-        public ShortestRouteObject(double[] linePos, double Step)
+        public ShortestRouteObject(double[] linePos, double Step, MainWindow mainWindow)
         {
             start_pos.Add(linePos[0]);
             start_pos.Add(linePos[1]);
@@ -27,7 +27,7 @@ namespace Optimal_Route_Calculator
 
             step = Step;
 
-            GenerateRoute();
+            GenerateRoute(mainWindow);
         }
 
         /// <summary>
@@ -35,10 +35,8 @@ namespace Optimal_Route_Calculator
         /// 2. Kills all the unessescary nodes
         /// 3. Repositions any remaining nodes away from land 
         /// </summary>
-        public void GenerateRoute()
+        public void GenerateRoute(MainWindow main_window)
         {
-            MainWindow main_window = (MainWindow)Application.Current.MainWindow;
-
             // Node: 0 = X, 1 = Y, 2 = F_cost, 3 = G_cost, 4 = index of parent
             List<List<double>> closed_nodes = new List<List<double>>();
             List<List<double>> open_nodes = new List<List<double>> { start_pos };

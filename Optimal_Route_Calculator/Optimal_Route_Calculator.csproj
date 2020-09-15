@@ -145,5 +145,8 @@
   <ItemGroup>
     <Folder Include="SaveFiles\" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Loading Compass.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
