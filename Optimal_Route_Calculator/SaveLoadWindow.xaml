@@ -1,0 +1,39 @@
+﻿<Window x:Class="Optimal_Route_Calculator.SaveLoadWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Optimal_Route_Calculator"
+        mc:Ignorable="d"
+        Title="SaveLoadWindow" Height="500" Width="450">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="0.7*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#2f5cb6"/>
+        <Border Grid.Row="1" Background="#1f3d7a"/>
+        
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="SAVE/LOAD WAYPOINTS:" Margin="5, 5, 5, 5" FontSize="20" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
+            <TextBlock Text="SAVING:" FontSize="18" Style="{StaticResource CustomFont}" FontWeight="Thin" Margin="5, 0, 5, 0"/>
+            <TextBlock Text="  - To save to a text file (.txt) enter the file name then click save" FontSize="12" FontWeight="Thin" Style="{StaticResource CustomFont}" />
+            <TextBlock Text="LOADING:" FontSize="18" Style="{StaticResource CustomFont}" FontWeight="Thin" Margin="5, 0, 5, 0"/>
+            <TextBlock Text="  - If there are existing waypoints, they will be deleted on loading a new route&#x0a;  - Select a save file from the box below then click load " FontSize="12" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
+            <TextBlock x:Name="StatusMsg" Text="" Margin="5, 5, 5, 5" FontSize="12" Style="{StaticResource CustomFont}" FontWeight="Thin" Foreground="OrangeRed"/>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Enter the save file name:" Margin="5, 5, 5, 5" FontSize="20" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
+            <TextBox x:Name="txtBoxFileName" Margin="5, 5, 5, 5" />
+            <StackPanel Orientation="Horizontal">
+                <Button Content="SAVE" Width="150" Margin="5, 5, 5, 5" Click="OnSave" ClickMode="Release"/>
+                <Button Content="LOAD" Width="150" Margin="5, 5, 5 ,5" Click="OnLoad" ClickMode="Release"/>
+            </StackPanel>
+            <TextBlock x:Name="txtBlockExistingFiles" Text="Previous Save Files:" Margin="5, 5, 5, 5" FontSize="12" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
+            <ListBox x:Name="lstBoxExistingFiles" Margin="5, 5, 5, 5"/>
+        </StackPanel>
+    </Grid>
+
+</Window>

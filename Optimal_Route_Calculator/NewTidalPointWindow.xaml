@@ -1,0 +1,40 @@
+﻿<Window x:Class="Optimal_Route_Calculator.NewTidalPointWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Optimal_Route_Calculator"
+        mc:Ignorable="d"
+        Title="New Tidal Point" Height="230" Width="480" >
+    <Window.DataContext>
+        <local:TidalFlowModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="1">
+            <oxy:PlotView x:Name="TidalFlowPlotModel" Model="{Binding tideModel}" Margin="10" Height="170" Width="200" />
+        </StackPanel>
+        <StackPanel Grid.Column="0">
+            <TextBlock Text="NEW TIDAL STREAM POINT:" Style="{DynamicResource CustomFont}" FontWeight="Thin" FontSize="20"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Minimum Flow:" Style="{DynamicResource CustomFont}" FontWeight="Thin" Margin="5, 5, 5, 5"/>
+                <TextBox x:Name="txtBoxMinFlow" Margin="5, 5, 5, 5" Width="50"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Maximum Flow:" Style="{DynamicResource CustomFont}" FontWeight="Thin" Margin="5, 5, 5, 5"/>
+                <TextBox x:Name="txtBoxMaxFlow" Margin="2, 5, 5, 5" Width="50" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Bearing:" Style="{DynamicResource CustomFont}" FontWeight="Thin" Margin="5, 5, 40, 5"/>
+                <TextBox x:Name="txtBoxTideBearing" Margin="5, 5, 5, 5" Width="50"/>
+            </StackPanel>
+            <TextBlock x:Name="InputStatusMessageTextBlock" Margin="5, 5, 5, 5" Width="150" Style="{DynamicResource CustomFont}" FontWeight="Thin"/>
+            <Button x:Name="btnNewTidePoint" Content="Create New Tidal Stream Point" Margin="5, 5, 5, 5" Click="BtnNewTidePointClick"/>
+            <Button x:Name="btnClose" Content="CLOSE" Click="BtnCloseWindow" ClickMode="Release" Margin="5, 5, 5, 5"  />
+        </StackPanel>
+    </Grid>
+</Window>
