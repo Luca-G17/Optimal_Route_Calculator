@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿
 FC:\Users\lucag\OneDrive\Documents\College\FINAL PROJECT\Optimal_Route_Calculator\App.xaml;;
 FC:\Users\lucag\OneDrive\Documents\College\FINAL PROJECT\Optimal_Route_Calculator\HelpWindow.xaml;;
@@ -5,3 +6,11 @@ FC:\Users\lucag\OneDrive\Documents\College\FINAL PROJECT\Optimal_Route_Calculato
 FC:\Users\lucag\OneDrive\Documents\College\FINAL PROJECT\Optimal_Route_Calculator\NewTidalPointWindow.xaml;;
 FC:\Users\lucag\OneDrive\Documents\College\FINAL PROJECT\Optimal_Route_Calculator\SaveLoadWindow.xaml;;
 
+=======
+﻿
+FC:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\App.xaml;;
+FC:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\HelpWindow.xaml;;
+FC:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\MainWindow.xaml;;
+FC:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\SaveLoadWindow.xaml;;
+
+>>>>>>> 3da34f7792296f9183bb3aefb50d77191f829b09

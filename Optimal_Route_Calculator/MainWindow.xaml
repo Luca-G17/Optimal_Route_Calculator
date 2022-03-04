@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿<Window x:Class="Optimal_Route_Calculator.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -28,3 +29,36 @@
         <TextBlock x:Name="LoadingText" Text="LOADING" FontSize="60" Foreground="White" Canvas.Left="495" Canvas.Top="400" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
     </Canvas>
 </Window>
+=======
+﻿<Window x:Class="Optimal_Route_Calculator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Optimal_Route_Calculator"
+        mc:Ignorable="d"
+        ResizeMode="CanResize"
+        Title="MainWindow" d:DesignWidth="1242" x:Name="Main_Window">
+    <Canvas Name="MyCanvas" Focusable="True" Background="LightGray" x:FieldModifier="public" KeyUp="KeyIsUp" KeyDown="KeyIsDown" MouseLeftButtonUp="LeftMouseIsUp" MouseRightButtonUp="RightMouseIsUp">
+        <StackPanel x:Name="InputPanel" Canvas.Left="1070">
+            <Button x:Name="Help" Content="HELP" Click="OnHelp" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="Yellow"/>
+            <Button x:Name="Plot" Content="PLOT" Click="OnPlot" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="Red"/>
+            <Button x:Name="OptimiseButton" Content="OPTIMISE" Click="OnOptimise" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="Red"/>
+            <Button x:Name="SaveLoad" Content="SAVE/LOAD" Click="OnSaveLoad" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="SteelBlue"/>
+            <Button x:Name="ResetButton" Content="RESET" Click="OnReset" ClickMode="Release" Margin="5, 5, 5, 5" Width="150" Background="GreenYellow"/>
+            <TextBlock x:Name="StepInputTextBlock" Text="Step (Default is 5):" Margin="5, 5, 5, 0" Width="150" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
+            <TextBox x:Name="StepInput" Margin="5, 0, 5, 5" Width="150" Canvas.Top="170" Canvas.Left="1070"/>
+            <TextBlock x:Name="WindAngleInputTextBlock" Text="Angle to wind (Default is 40º):" Margin="5, 5, 5, 0" Width="150" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
+            <TextBox x:Name="WindAngleInput" Margin="5, 0, 5, 5" Width="150"/>
+            <TextBlock x:Name="MaxHullSpeedInputTextBlock" Text="Max Speed (Default is 6Kts):" Margin="5, 5, 5, 0" Width="150" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
+            <TextBox x:Name="MaxHullSpeedInput" Margin="5, 0, 5, 5" Width="150"/>
+        </StackPanel>
+        <StackPanel Name="InfoPanel" Canvas.Left="1070" Canvas.Top="400">
+            <TextBlock x:Name="RouteInfo" Text="Route Infomation:" Margin="5, 5, 5, 5" Width="150" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
+        </StackPanel>
+        <Rectangle x:Name="LoadingRectangle" Fill="#3F3F41" Width="1250" Height="620"/>
+        <Image x:Name="LoadingCompass" Source="Images/Loading Compass.jpg" Width="400" Height="400" Canvas.Left="410"/>
+        <TextBlock x:Name="LoadingText" Text="LOADING" FontSize="60" Foreground="White" Canvas.Left="495" Canvas.Top="400" Style="{StaticResource CustomFont}" FontWeight="Thin"/>
+    </Canvas>
+</Window>
+>>>>>>> 3da34f7792296f9183bb3aefb50d77191f829b09
