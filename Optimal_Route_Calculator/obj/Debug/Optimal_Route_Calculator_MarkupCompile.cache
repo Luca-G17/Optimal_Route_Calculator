@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ﻿Optimal_Route_Calculator
 
 
@@ -13,31 +12,9 @@ DEBUG;TRACE
 C:\Users\lucag\OneDrive\Documents\College\FINAL PROJECT\Optimal_Route_Calculator\App.xaml
 41156175941
 
-31-1295286834
-2171763636
+29-719029736
+20837757236
 HelpWindow.xaml;MainWindow.xaml;NewTidalPointWindow.xaml;SaveLoadWindow.xaml;
 
 False
 
-=======
-﻿Optimal_Route_Calculator
-
-
-winexe
-C#
-.cs
-C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\obj\Debug\
-Optimal_Route_Calculator
-none
-false
-DEBUG;TRACE
-C:\Users\lucag\source\repos\Optimal_Route_Calculator\Optimal_Route_Calculator\App.xaml
-3342071586
-
-21-562102694
-161654880864
-HelpWindow.xaml;MainWindow.xaml;SaveLoadWindow.xaml;
-
-True
-
->>>>>>> 3da34f7792296f9183bb3aefb50d77191f829b09

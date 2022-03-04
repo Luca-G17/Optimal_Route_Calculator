@@ -1,13 +1,16 @@
-﻿using System.Windows.Media;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Shapes;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Optimal_Route_Calculator
 {
-    /// <summary>
-    /// Both the Wind arrow and the Tidal Points require an arrow
-    /// They should inherit from this class
-    /// </summary>
-    public class Arrow : MainObject
+    class Arrow : MainObject
     {
         protected ImageBrush Skin = new ImageBrush();
         protected BitmapImage bitmapImage;
@@ -20,7 +23,6 @@ namespace Optimal_Route_Calculator
         {
             set
             {
-                // Rotations are zeroed at the +ve x-axis so add 90
                 rotate.Angle = AngleAddition(value, -90) - rotateAngle;
                 rotateAngle += rotate.Angle;
                 shape.RenderTransform = rotate;

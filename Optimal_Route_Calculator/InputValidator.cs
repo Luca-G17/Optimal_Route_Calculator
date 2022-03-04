@@ -1,16 +1,21 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using System.Diagnostics;
 
 
 namespace Optimal_Route_Calculator
 {
-    static class InputValidator
+    abstract class InputValidator
     {
-        /// <summary>
-        /// Verifies that a text input will actually change the exsting value and that it contains a value
-        /// </summary>
-        /// <param name="textBox"></param>
-        /// <param name="existing_value"></param>
-        /// <returns></returns>
         public static bool TextInputCheck(TextBox textBox, double existing_value)
         {
             if (textBox.Text != "" && textBox.Text != existing_value.ToString())
@@ -22,7 +27,6 @@ namespace Optimal_Route_Calculator
 
         public static bool NumValidate(string inp)
         {
-            // Verifies that the input only consists of numbers
             foreach (char character in inp)
             {
                 // ASCII: 48 = '0', 57 = '9', 46 = '.'
@@ -32,7 +36,6 @@ namespace Optimal_Route_Calculator
                 }
             }
             return true;
-
         }
     }
 }

@@ -1,20 +1,3 @@
-<<<<<<< HEAD
-﻿using System.Windows;
-
-namespace Optimal_Route_Calculator
-{
-    /// <summary>
-    /// Interaction logic for HelpWindow.xaml
-    /// </summary>
-    public partial class HelpWindow : Window
-    {
-        public HelpWindow()
-        {
-            InitializeComponent();
-        }
-    }
-}
-=======
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,4 +25,3 @@ namespace Optimal_Route_Calculator
         }
     }
 }
->>>>>>> 3da34f7792296f9183bb3aefb50d77191f829b09
